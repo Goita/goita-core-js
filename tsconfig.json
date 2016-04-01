@@ -1,0 +1,15 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "system",
+        "noImplicitAny": true,
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "outFile": "./build/goita.js",
+        "sourceMap": true,
+        "declaration": true
+    },
+    "files": [
+        "core/core.ts"
+    ]
+}
