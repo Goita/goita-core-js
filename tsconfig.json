@@ -1,15 +1,17 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "module": "system",
+        "module": "commonjs",
         "noImplicitAny": true,
         "removeComments": false,
         "preserveConstEnums": true,
-        "outFile": "./build/goita.js",
+        /*"outFile": "./build/goita.js",*/
+        "outDir": "./build",
         "sourceMap": true,
         "declaration": true
     },
     "files": [
-        "core/core.ts"
+        "index.ts",
+        "goita/table.ts"
     ]
 }
