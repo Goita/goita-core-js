@@ -1,17 +1,19 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
+        "target": "es5",
         "module": "commonjs",
         "noImplicitAny": true,
         "removeComments": false,
         "preserveConstEnums": true,
-        /*"outFile": "./build/goita.js",*/
-        "outDir": "./build",
+        /*"outFile": "./build/index.js",*/
+        "outDir": "lib",
         "sourceMap": true,
         "declaration": true
     },
     "files": [
-        "index.ts",
-        "goita/table.ts"
+        "src/index.ts",
+        "src/table.ts",
+        "src/player.ts"
     ]
 }
