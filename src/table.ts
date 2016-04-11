@@ -1,6 +1,5 @@
-
-export class table{
+export default class table{
     log = ()=>{
-        console.log("Hello! Node.js × TypeScript from Class");
+        console.log("Hello! Node.js × TypeScript from Table Class");
     }
 }
