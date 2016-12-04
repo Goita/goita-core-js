@@ -5,6 +5,7 @@
   "main": "index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
+    "postinstall": "typings install",
     "build": "tsc -p .",
     "test": "mocha --compilers ts:ts-node/register"
   },
@@ -28,6 +29,7 @@
     "mocha-sinon": "^1.1.6",
     "sinon": "^1.17.6",
     "ts-node": "^1.7.0",
+    "tslint": "^4.0.2",
     "typescript": "^2.0.10",
     "typings": "^2.0.0"
   }
