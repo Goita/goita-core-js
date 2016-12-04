@@ -1,7 +1,5 @@
-/// <reference path="./koma.ts" />
-
 import * as koma from './koma';
-export default class player{
+export default class Player{
     tegoma = new Array<string>();
     /* public field */
     field = new Array<string>();
