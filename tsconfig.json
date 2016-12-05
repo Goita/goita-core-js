@@ -12,7 +12,7 @@
         "declaration": true
     },
     "files": [
-        "src/index.ts",       
-        "src/exports.ts"
+        "typings/index.d.ts",
+        "src/index.ts"
     ]
 }

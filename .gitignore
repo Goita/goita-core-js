@@ -37,3 +37,6 @@ lib
 
 #typings Directory
 typings
+
+# mocha temp directory
+tmp

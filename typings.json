@@ -2,10 +2,10 @@
   "name": "goita-core",
   "version": false,
   "ambientDependencies": {
-    "node": "registry:dt/node#4.0.0+20160330064709"
   },
   "globalDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",
-    "mocha": "registry:dt/mocha#2.2.5+20161028141524"
+    "mocha": "registry:dt/mocha#2.2.5+20161028141524",
+    "node": "registry:dt/node#6.0.0+20161121110008"
   }
 }
