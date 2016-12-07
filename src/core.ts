@@ -1,11 +1,7 @@
-import table from "./table";
-import { default as player } from "./player";
-export default class core{
+import Table from "./table";
+
+export default class Core{
     log = ()=>{
-        let t = new table();
-        t.log();
-        let p = new player();
-        p.log();
-        console.log("Hello! Node.js × TypeScript from Core Class");
+        console.log("Hello! Node.js x TypeScript from Core Class");
     }
 }

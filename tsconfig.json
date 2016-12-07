@@ -9,12 +9,17 @@
         /*"outFile": "./build/index.js",*/
         "outDir": "lib",
         "sourceMap": true,
-        "declaration": true
+        "declaration": true,
+        "watch": true
     },
     "files": [
         "src/index.ts",
         "src/exports.ts",
+        "src/define.ts",
+        "src/core.ts",
         "src/table.ts",
-        "src/player.ts"
+        "src/playmemo.ts",
+        "src/player.ts",
+        "src/koma.ts"
     ]
 }
