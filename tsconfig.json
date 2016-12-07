@@ -13,13 +13,7 @@
         "watch": true
     },
     "files": [
-        "src/index.ts",
-        "src/exports.ts",
-        "src/define.ts",
-        "src/core.ts",
-        "src/table.ts",
-        "src/playmemo.ts",
-        "src/player.ts",
-        "src/koma.ts"
+        "src/typings/index.d.ts",
+        "src/index.ts"
     ]
 }

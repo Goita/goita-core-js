@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "description": "Goita core library in JavaScript",
   "main": "index.js",
-  "typings": "lib/exports.d.ts",
+  "typings": "lib/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "typings install",
+    "build": "tsc -p .",
+    "test": "mocha --compilers ts:ts-node/register"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,15 @@
   "bugs": {
     "url": "https://github.com/Goita/goita-core-js/issues"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "mocha-sinon": "^1.1.6",
+    "sinon": "^1.17.6",
+    "ts-node": "^1.7.0",
+    "tslint": "^4.0.2",
+    "typescript": "^2.0.10",
+    "typings": "^2.0.0"
+  }
 }
