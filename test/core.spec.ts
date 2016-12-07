@@ -1,4 +1,4 @@
-/// <reference path="../typings/index.d.ts" />
+/// <reference path="../src/typings/index.d.ts" />
 
 import {Core} from "../src/exports";
 import * as Chai from "chai";

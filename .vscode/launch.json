@@ -8,6 +8,13 @@
             "type": "node",
             "request": "launch",
             "name": "プログラムの起動",
+<<<<<<< HEAD
+            "program": "${workspaceRoot}/index.js",
+            "cwd": "${workspaceRoot}",
+            "outFiles": [],
+            "sourceMaps": true,
+            "preLaunchTask": "tasks.json"
+=======
             "program": "${workspaceRoot}\\index.js",
             "cwd": "${workspaceRoot}"
         },
@@ -16,6 +23,7 @@
             "request": "attach",
             "name": "プロセスに添付",
             "port": 5858
+>>>>>>> 66870f092ff5702b96f60a26bd540bda2d32a8b6
         }
     ]
 }

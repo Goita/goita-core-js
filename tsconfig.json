@@ -9,10 +9,11 @@
         /*"outFile": "./build/index.js",*/
         "outDir": "lib",
         "sourceMap": true,
-        "declaration": true
+        "declaration": true,
+        "watch": true
     },
     "files": [
-        "typings/index.d.ts",
+        "src/typings/index.d.ts",
         "src/index.ts"
     ]
 }
