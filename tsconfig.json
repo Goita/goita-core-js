@@ -6,14 +6,13 @@
         "noImplicitAny": true,
         "removeComments": false,
         "preserveConstEnums": true,
-        /*"outFile": "./build/index.js",*/
         "outDir": "lib",
         "sourceMap": true,
         "declaration": true,
         "watch": true
     },
     "files": [
-        "src/typings/index.d.ts",
+        "typings/index.d.ts",
         "src/index.ts"
     ]
 }
