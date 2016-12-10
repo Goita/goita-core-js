@@ -1,7 +1,7 @@
 import * as Define from './define';
 
 //CONSTANTS
-  //x:不明 0:空 1:し 2:香 3:馬 4:銀 5:金 6:角 7:飛 8:王 9:玉
+  //x:不明 0:空 1:し 2:香 3:馬 4:銀 5:金 6:角 7:飛 8:王 9:玉 p:無し
 
 export const EMPTY = '0', HIDDEN = 'x';
 export const SHI = '1', GON = '2', BAKKO = '3', GIN = '4', KIN = '5', KAKU = '6', HISHA = '7';

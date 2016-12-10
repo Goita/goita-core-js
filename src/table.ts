@@ -6,6 +6,7 @@ import History from './history';
 
 export default class Table{
     players: Array<Player>;
+    currentPlayer: number;
     history: History;
 
     constructor(){
@@ -15,21 +16,21 @@ export default class Table{
         }
     }
 
-    play = (playerNo:number, blockKoma:string, attackKoma:string, playablecheck?:boolean): void =>{
+    play = (blockKoma:string, attackKoma:string, playablecheck?:boolean): void =>{
         if(playablecheck){
-            if(!this.canPlay(playerNo, blockKoma, attackKoma)){
+            if(!this.canPlay(blockKoma, attackKoma)){
                 throw "cannot play a given koma";
             }
         }
         
-        let player = this.players[playerNo];
-        let memo = PlayMemo.Match(playerNo, blockKoma, attackKoma);
+        let player = this.players[this.currentPlayer];
+        let memo = PlayMemo.Match(this.currentPlayer, blockKoma, attackKoma);
         player.putKoma(blockKoma);
         player.putKoma(attackKoma);
 
     }
 
-    canPlay = (playerNo:number, block: string, attack: string): boolean=>{
+    canPlay = (block: string, attack: string): boolean=>{
         //[ATTENTION] if block and attack are the same, must count koma left
 
         return true;
