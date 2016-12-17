@@ -22,7 +22,9 @@
   "bugs": {
     "url": "https://github.com/Goita/goita-core-js/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "random-js": "^1.0.8"
+  },
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",

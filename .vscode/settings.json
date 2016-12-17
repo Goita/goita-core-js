@@ -6,7 +6,7 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "lib/*.map": true
-    } 
-,
-"typescript.check.workspaceVersion": false
+    },
+    "typescript.check.workspaceVersion": false,
+    "typescript.tsdk": "./node_modules/typescript/lib"
 }

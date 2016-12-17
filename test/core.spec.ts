@@ -1,6 +1,6 @@
 /// <reference path="../typings/index.d.ts" />
 
-import {Core} from "../src/exports";
+import {Core} from "../src";
 import * as Chai from "chai";
 
 describe('Core',()=>{

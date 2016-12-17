@@ -1,45 +1,41 @@
-import * as Koma from './koma';
-import * as Define from './define';
+import {Koma, KomaCollection} from './koma';
+import {Define} from './define';
 
 export default class Player{
 
     /* player's koma in hand */
-    tegoma: Array<string>;
+    tegoma: KomaCollection;
     /* visible field */
-    field :Array<string>;
+    field :KomaCollection;
     /* hidden field */
-    _hiddenfield :Array<string>;
+    _hiddenfield :KomaCollection;
 
     tegomaCounter:number;
     fieldCounter:number;
 
     no :number;
-    hasTurn :boolean;
     
     constructor(no: number){
         this.no = no;
     }
 
-    putKoma = (koma: string):void =>{
-        this.tegoma[this.tegoma.indexOf(koma)] = Koma.EMPTY;
-        this.tegoma.sort(Player.sortDesc);
+    putKoma(koma: Koma):void{
+        this.tegoma[this.tegoma.indexOf(koma)] = Koma.Empty;
+        this.tegoma.sortDesc();
         this.tegomaCounter--;
         this.field[this.fieldCounter] = koma;
         this._hiddenfield[this.fieldCounter] = koma;
         this.fieldCounter++;
     }
-
-    private static sortDesc = (a:string, b:string):number=>{
-        if(a>b) {return -1;}
-        if(a<b) {return 1;}
-        return 0;
-    }
     
-    /**
-     * player has a given koma in player's tegoma
-     */
-    hasKoma = (koma: string):boolean =>{
+    /** return true, if there is a given koma in tegoma */
+    hasKoma(koma: Koma):boolean{
         return this.tegoma.indexOf(koma) >= 0;
+    }
+
+    /** count a given koma in tegoma  */
+    countKoma(koma: Koma): number{
+        return this.tegoma.filter((k)=> k.equals(koma)).length;
     }
     
     /**
@@ -47,15 +43,14 @@ export default class Player{
      * 
      * @returns {Array<string>} hidden koma: koma value / visible koma or empty: null
      */
-    getHiddenKoma =(): string[]=>
-    {
-        let diff = Koma.createEmptyKomaArray();
+    getHiddenKoma(): Koma[]{
+        let diff = KomaCollection.createEmptyField();
         if(this.field === null || this._hiddenfield === null 
             || this.field.length !== this._hiddenfield.length){
             return diff;
         }
         for(let i=0;i<Define.MAX_FIELD_LEN;i++){
-            if(this.field[i] === Koma.HIDDEN){
+            if(this.field[i].equals(Koma.Hidden)){
                 diff[i] = this._hiddenfield[i];
             }
         }

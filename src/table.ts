@@ -1,22 +1,30 @@
-import * as Define from './define';
-import * as Koma from './koma';
-import { default as Player } from "./player";
-import PlayMemo from './playmemo';
-import History from './history';
+import {Define} from './define';
+import {Koma} from './koma';
+import { default as Player } from './player';
+import {Move, TableHistory} from './history';
+import {Util} from './util';
+
 
 export default class Table{
     players: Array<Player>;
     currentPlayer: number;
-    history: History;
+    private _history: TableHistory;
+    private _historyIndex: number; //history stack index
 
     constructor(){
+        this.init();
+    }
+
+    init(): void{
+        this._historyIndex = 0;
+        this._history = new TableHistory(Util.dealTegomas());
         this.players = new Array<Player>();
         for(let i =0; i<Define.MAX_PLAYERS;i++){
             this.players[i] = new Player(i);
         }
     }
 
-    play = (blockKoma:string, attackKoma:string, playablecheck?:boolean): void =>{
+    play(blockKoma:Koma, attackKoma:Koma, playablecheck?:boolean): void{
         if(playablecheck){
             if(!this.canPlay(blockKoma, attackKoma)){
                 throw "cannot play a given koma";
@@ -24,23 +32,35 @@ export default class Table{
         }
         
         let player = this.players[this.currentPlayer];
-        let memo = PlayMemo.Match(this.currentPlayer, blockKoma, attackKoma);
-        player.putKoma(blockKoma);
-        player.putKoma(attackKoma);
+        let move = Move.ofMatch(this.currentPlayer, blockKoma, attackKoma);
+        //player.putKoma(blockKoma);
+        //player.putKoma(attackKoma);
+    }
+
+    /** undo the latest move */
+    undo(): void{
 
     }
 
-    canPlay = (block: string, attack: string): boolean=>{
+    canPlay(block: Koma, attack: Koma): boolean{
         //[ATTENTION] if block and attack are the same, must count koma left
-
+        
         return true;
     }
 
-    canBlock = (playerNo:number, blockKoma:string): boolean=>{
-        return true;
+    /** resume from history string */
+    public resume(historyStr:string):void{
+        this.init();
+
+
     }
 
-    canAttack = (playerNo:number, attackKoma:string): boolean=>{
-        return true;
+    /** back 1 move on this history */
+    public back():void{
+
+    }
+    /** forward 1 move on this history */
+    public next():void{
+
     }
 }
