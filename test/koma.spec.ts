@@ -7,13 +7,13 @@ describe('Koma',()=>{
     let list :KomaCollection;
     beforeEach(()=>{
         list = new KomaCollection();
-        list.push(Koma.Shi);
-        list.push(Koma.Gon);
+        list.push(Koma.shi);
+        list.push(Koma.gon);
     });
 
     describe('#indexOf', ()=>{
         it("search method success", ()=>{
-            let ret = list.indexOf(Koma.Gon);
+            let ret = list.indexOf(Koma.gon);
             Chai.expect(ret).to.equals(1);
         });
     });

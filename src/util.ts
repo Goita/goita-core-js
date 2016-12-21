@@ -5,7 +5,7 @@ export module Util{
     let rand = new Random(Random.engines.mt19937().autoSeed());
 
     export function dealTegomas(): string[]{
-        let komaCircle = Define.KOMA_CIRCLE.split('');
+        let komaCircle = Define.komaCircle.split('');
         shuffle(komaCircle);
         let tegomas = new Array<string>();
         for(let c of cut(komaCircle, 8)){

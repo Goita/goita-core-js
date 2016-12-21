@@ -1,4 +1,4 @@
-import Table from "./table";
+//import Table from "./table";
 import {Koma, KomaCollection} from "./koma";
 
 export default class Core{
@@ -9,12 +9,12 @@ export default class Core{
     test():void{
         let list :KomaCollection;
         list = new KomaCollection();
-        list.push(Koma.Shi);
-        list.push(Koma.Shi);
-        list.push(Koma.Shi);
-        list.push(Koma.Shi);
-        list.push(Koma.Gon);
-        let ret = list.indexOf(Koma.Gon);
+        list.push(Koma.shi);
+        list.push(Koma.shi);
+        list.push(Koma.shi);
+        list.push(Koma.shi);
+        list.push(Koma.gon);
+        let ret = list.indexOf(Koma.gon);
 
         console.log("indexOf returns " + ret);
     }

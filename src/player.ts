@@ -8,26 +8,30 @@ export default class Player{
     /* visible field */
     field :KomaCollection;
     /* hidden field */
-    _hiddenfield :KomaCollection;
+    hiddenfield :KomaCollection;
 
     tegomaCounter:number;
     fieldCounter:number;
 
     no :number;
-    
+
     constructor(no: number){
         this.no = no;
     }
 
-    putKoma(koma: Koma):void{
-        this.tegoma[this.tegoma.indexOf(koma)] = Koma.Empty;
+    putKoma(koma: Koma, faceDown:boolean = false):void{
+        this.tegoma[this.tegoma.indexOf(koma)] = Koma.empty;
         this.tegoma.sortDesc();
         this.tegomaCounter--;
-        this.field[this.fieldCounter] = koma;
-        this._hiddenfield[this.fieldCounter] = koma;
+        if(faceDown){
+            this.field[this.fieldCounter] = Koma.hidden;
+        }else{
+            this.field[this.fieldCounter] = koma;
+        }
+        this.hiddenfield[this.fieldCounter] = koma;
         this.fieldCounter++;
     }
-    
+
     /** return true, if there is a given koma in tegoma */
     hasKoma(koma: Koma):boolean{
         return this.tegoma.indexOf(koma) >= 0;
@@ -37,7 +41,7 @@ export default class Player{
     countKoma(koma: Koma): number{
         return this.tegoma.filter((k)=> k.equals(koma)).length;
     }
-    
+
     /**
      * get the hidden koma array(the places are indicated)
      * 
@@ -45,16 +49,15 @@ export default class Player{
      */
     getHiddenKoma(): Koma[]{
         let diff = KomaCollection.createEmptyField();
-        if(this.field === null || this._hiddenfield === null 
-            || this.field.length !== this._hiddenfield.length){
+        if(this.field === null || this.hiddenfield === null
+            || this.field.length !== this.hiddenfield.length){
             return diff;
         }
-        for(let i=0;i<Define.MAX_FIELD_LEN;i++){
-            if(this.field[i].equals(Koma.Hidden)){
-                diff[i] = this._hiddenfield[i];
+        for(let i=0;i<Define.maxFieldLength;i++){
+            if(this.field[i].equals(Koma.hidden)){
+                diff[i] = this.hiddenfield[i];
             }
         }
         return diff;
     }
-    
 }
