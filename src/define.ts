@@ -1,4 +1,6 @@
 export module Define{
+  export const defaultWinScore: number = 150;
+  export const shiScore: number = 10;
   export const maxFieldLength : number = 8;
   export const maxPlayers : number = 4;
   export const historyStringDelimiter : string = ',';

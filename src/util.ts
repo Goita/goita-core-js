@@ -1,15 +1,17 @@
+/// <reference path="../typings/index.d.ts" />
+
 import {Define} from './define';
 import * as Random from 'random-js';
 
 export module Util{
-    let rand = new Random(Random.engines.mt19937().autoSeed());
+    export let rand: Random = new Random(Random.engines.mt19937().autoSeed());
 
     export function dealTegomas(): string[]{
         let komaCircle = Define.komaCircle.split('');
         shuffle(komaCircle);
         let tegomas = new Array<string>();
         for(let c of cut(komaCircle, 8)){
-            tegomas.push(c.join());
+            tegomas.push(c.join(''));
         }
         return tegomas;
     }

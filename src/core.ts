@@ -1,27 +1,16 @@
-//import Table from "./table";
-import {Koma, KomaCollection} from "./koma";
+import {default as Game} from "./game";
+import {default as Table} from "./table";
 
-export default class Core{
-    log = ()=>{
-        console.log("Hello! Node.js x TypeScript from Core Class");
+/**  */
+export class Core{
+
+    /** create a new game */
+    public static createGame():Game{
+        return new Game();
     }
 
-    test():void{
-        let list :KomaCollection;
-        list = new KomaCollection();
-        list.push(Koma.shi);
-        list.push(Koma.shi);
-        list.push(Koma.shi);
-        list.push(Koma.shi);
-        list.push(Koma.gon);
-        let ret = list.indexOf(Koma.gon);
-
-        console.log("indexOf returns " + ret);
-    }
-    /**
-     * 
-     */
-    hello(name:string):string{
-        return "hello " + name;
+    /** create a new table and the dealer is player 1 */
+    public static createTable():Table{
+        return new Table(0);
     }
 }

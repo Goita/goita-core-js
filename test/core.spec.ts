@@ -1,18 +1,20 @@
 /// <reference path="../typings/index.d.ts" />
 
-import {Core} from "../src";
+import {GoitaCore, Define} from "../src";
 import * as Chai from "chai";
 
 describe('Core',()=>{
-    let core :Core;
-    beforeEach(()=>{
-        core = new Core();
+    describe('#createGame', ()=>{
+        it("return game object", ()=>{
+            let game = GoitaCore.createGame();
+            Chai.expect(game.winScore).to.equal(Define.defaultWinScore);
+        });
     });
 
-    describe('#hello', ()=>{
-        it("should return hello and given name", ()=>{
-            let ret = core.hello("test");
-            Chai.expect(ret).to.equals("hello test");
+    describe('#createTable', ()=>{
+        it("return table object", ()=>{
+            let table = GoitaCore.createTable();
+            Chai.expect(table.currentPlayer.no).to.equal(0);
         });
     });
 });

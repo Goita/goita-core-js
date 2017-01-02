@@ -1,8 +1,8 @@
 {
   "name": "goita-core",
   "version": "0.0.1",
-  "description": "Goita core library in JavaScript",
-  "main": "index.js",
+  "description": "Goita Core Library in JavaScript",
+  "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
     "postinstall": "typings install",

@@ -2,21 +2,27 @@ import {Koma} from './koma';
 import {Define} from './define';
 
 export class Move{
+    describe: string;
     no:number;
     attack:Koma;
     block:Koma;
     pass: boolean;
     faceDown: boolean;
+    finish: boolean;
+    doubleUp: boolean;
 
     private constructor(no: number){
         this.no = no;
         this.pass = false;
         this.faceDown = false;
+        this.finish = false;
+        this.finish = false;
     }
 
     /** block and attack move */
     public static ofMatch(no: number, blockKoma:Koma, attackKoma:Koma):Move{
         let move = new Move(no);
+        move.describe = "Match";
         move.block = blockKoma;
         move.attack = attackKoma;
         move.pass = false;
@@ -27,6 +33,7 @@ export class Move{
     /** face down and attack move */
     public static ofFaceDown(no: number, blockKoma:Koma, attackKoma:Koma):Move{
         let move = Move.ofMatch(no, blockKoma, attackKoma);
+        move.describe = "FaceDown";
         move.faceDown = true;
         return move;
     }
@@ -34,7 +41,22 @@ export class Move{
     /** pass move */
     public static ofPass(no: number):Move{
         let move = new Move(no);
+        move.describe = "Pass";
         move.pass = true;
+        return move;
+    }
+
+    public static ofFinish(no: number, block:Koma, final:Koma): Move{
+        let move = Move.ofMatch(no, block, final);
+        move.describe = "Finish";
+        move.finish = true;
+        return move;
+    }
+
+    public static ofDoubleUpFinish(no: number, block:Koma, final:Koma): Move{
+        let move = Move.ofFinish(no, block, final);
+        move.describe = "x2Finish";
+        move.doubleUp = true;
         return move;
     }
 
@@ -76,6 +98,10 @@ export class TableHistory{
         this.attackerLog = new Array<number>();
         this.attackerLog.push(dealer);
         this.turn = dealer;
+    }
+
+    public get lastMove():Move{
+        return this.moveStack[this.moveStack.length-1];
     }
 
     public get lastAttacker():number{
@@ -155,8 +181,4 @@ export class TableHistory{
         }
         return str.join(Define.historyStringDelimiter);
     }
-}
-
-export class GameHistory extends Array<TableHistory>{
-    //
 }

@@ -35,7 +35,7 @@ export class Koma{
         throw "Invalid koma value " + val + " was given";
     }
 
-    public get Point(): number{
+    public get Score(): number{
         let n = Number(this.value);
         return Math.floor(n/2)*10 + 10;
     }
@@ -43,6 +43,7 @@ export class Koma{
     public get Text(): string{
         let text = '';
         switch(this.value){
+            case Define.empty: text = "";break;
             case Define.hidden: text = "■"; break;
             case Define.shi: text = "し"; break;
             case Define.gon: text = "香"; break;
@@ -72,6 +73,11 @@ export class Koma{
         return this.value === target.value;
     }
 
+    /** return if this koma equals to the given koma. */
+    public equalsExact(target:Koma):boolean{
+        return this.value === target.value;
+    }
+
     public canBlock(attack: Koma): boolean{
         if(this.equals(attack)){
             return true;
@@ -87,25 +93,35 @@ export class Koma{
 
         return false;
     }
+
+    public toString():string{
+        return this.value;
+    }
 }
 
-export class KomaCollection extends Array<Koma>{
+export class KomaArray{
+    //currently cannot extends Array.prototype ES5.
+    //implement array methods as util class instead to extend prototype.
 
-    public contains(koma: Koma): boolean{
-        return this.some((k)=>k.equals(koma));
+    public static contains(target:Array<Koma>, koma: Koma): boolean{
+        return target.some((k)=>k.equals(koma));
     }
 
-    public count(koma: Koma): number{
-        return this.filter(koma.equals).length;
+    public static containsExact(target:Array<Koma>, koma: Koma): boolean{
+        return target.some((k)=>k.equalsExact(koma));
     }
 
-    public sortAsc():void{
-        this.sort(KomaCollection.comparerAsc);
+    public static count(target:Array<Koma>, koma: Koma): number{
+        return target.filter((k)=>koma.equals(k)).length;
     }
 
-    public sortDesc():void{
-        this.sort(KomaCollection.comparerDesc);
-    }
+    public static sortAsc(target:Array<Koma>):void{
+        target.sort(KomaArray.comparerAsc);
+    };
+
+    public static sortDesc(target:Array<Koma>):void{
+        target.sort(KomaArray.comparerDesc);
+    };
 
     private static comparerDesc(a:Koma, b:Koma):number{
         if(a.value>b.value) {return -1;}
@@ -114,22 +130,26 @@ export class KomaCollection extends Array<Koma>{
     }
 
     private static comparerAsc(a:Koma, b:Koma):number{
-        return -KomaCollection.comparerDesc(a, b);
+        return -KomaArray.comparerDesc(a, b);
     }
 
-    public static createEmptyField(): KomaCollection{
-        let a = new KomaCollection();
+    public static createEmptyField(): Array<Koma>{
+        let a = new Array<Koma>();
         for(let i=0;i<Define.maxFieldLength;i++){
             a[i] = Koma.empty;
         }
         return a;
     }
 
-    public static createTegomaFrom(tegoma: string){
-        let a = new KomaCollection();
+    public static createHandFrom(hand: string):Array<Koma>{
+        let a = new Array<Koma>();
         for(let i = 0; i< Define.maxFieldLength; i++){
-            a[i] = Koma.fromStr(tegoma[i]);
+            a[i] = Koma.fromStr(hand[i]);
         }
         return a;
+    }
+
+    public static toString(target:Array<Koma>): string{
+        return target.join('');
     }
 }

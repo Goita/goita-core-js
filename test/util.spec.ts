@@ -1,7 +1,6 @@
 /// <reference path="../typings/index.d.ts" />
 
-import {Define} from '../src';
-import {Util} from "../src";
+import {Define, Util} from '../src';
 import * as Chai from "chai";
 
 describe('Util',()=>{
@@ -35,6 +34,17 @@ describe('Util',()=>{
             console.log("shuffled indicator: " + sumIndex/loop);
             Chai.expect(sumIndex/loop).to.within(14.5, 16.5);
             // 31/2 = 15.5
+        });
+    });
+
+    describe('#dealTegomas', ()=>{
+        it("get array of string", ()=>{
+            let ret = Util.dealTegomas();
+            Chai.expect(ret.length).to.equal(Define.maxPlayers);
+            Chai.expect(ret[0].length).to.equal(Define.maxFieldLength);
+            Chai.expect(ret[1].length).to.equal(Define.maxFieldLength);
+            Chai.expect(ret[2].length).to.equal(Define.maxFieldLength);
+            Chai.expect(ret[3].length).to.equal(Define.maxFieldLength);
         });
     });
 });
