@@ -12,4 +12,5 @@ export module Define{
   export const ou: string = '8', gyoku: string = '9';
   export const pass: string = 'p';
   export const komaCircle = '11111111112222333344445555667789';
+  export const dealerChar: string = 's';
 }

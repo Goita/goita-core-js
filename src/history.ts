@@ -1,5 +1,6 @@
 import {Koma} from './koma';
 import {Define} from './define';
+import {Util} from './util';
 
 export class Move{
     describe: string;
@@ -35,6 +36,7 @@ export class Move{
         let move = Move.ofMatch(no, blockKoma, attackKoma);
         move.describe = "FaceDown";
         move.faceDown = true;
+        move.pass = false;
         return move;
     }
 
@@ -61,32 +63,33 @@ export class Move{
     }
 
     public static fromStr(move: string, attaker?:number): Move{
-        let no = Number(move[0]);
+        let no = Number(move[0]) - 1;
         if(move[1] === Define.pass){
             return Move.ofPass(no);
         }
-        if(attaker && no === attaker){
+        if(attaker !== undefined && no === attaker){
             return Move.ofFaceDown(no, Koma.fromStr( move[1]), Koma.fromStr( move[2]));
         }
         return Move.ofMatch(no, Koma.fromStr( move[1]), Koma.fromStr( move[2]));
     }
 
     public toString():string{
-        if(this.pass){return this.no + Define.pass;}
-        return this.no + (this.faceDown ? Define.hidden : this.block.value) + this.attack.value;
+        if(this.pass){return (this.no+1) + Define.pass;}
+        return (this.no+1) + (this.faceDown ? Define.hidden : this.block.value) + this.attack.value;
     }
 
     public toOpenString():string{
-        if(this.pass){return this.no + Define.pass;}
-        return this.no + this.block.value + this.attack.value;
+        if(this.pass){return (this.no+1) + Define.pass;}
+        return (this.no+1) + this.block.value + this.attack.value;
     }
 }
 
-export class TableHistory{
+export class BoardHistory{
     public moveStack : Array<Move>;
     public tegomas : Array<string>;
     public attackerLog: Array<number>;
     public turn: number;
+    public dealer:number;
 
     public constructor(dealer: number, tegomas: Array<string>){
         this.init(dealer, tegomas);
@@ -98,6 +101,7 @@ export class TableHistory{
         this.attackerLog = new Array<number>();
         this.attackerLog.push(dealer);
         this.turn = dealer;
+        this.dealer = dealer;
     }
 
     public get lastMove():Move{
@@ -123,7 +127,7 @@ export class TableHistory{
         if(!move.pass){
             this.attackerLog.push(move.no);
         }
-        this.turn = (move.no) % 4 + 1;
+        this.turn = Util.getNextTurn(move.no);
     }
 
     public pop(): Move{
@@ -131,11 +135,11 @@ export class TableHistory{
         if(!move.pass){
             this.attackerLog.pop();
         }
-        this.turn = (move.no + 2) % 4 + 1;
+        this.turn = Util.getPreviousTurn(move.no);
         return move;
     }
 
-    public static fromString(history: string): TableHistory{
+    public static fromString(history: string): BoardHistory{
         let historyArray = history.split(Define.historyStringDelimiter);
 
         let tegomas = new Array<string>();
@@ -143,23 +147,27 @@ export class TableHistory{
             tegomas.push(historyArray[i]);
         }
 
-        let moves = TableHistory.parseMoveHistory(historyArray.slice(Define.maxPlayers));
-        let dealer = moves[0].no;
-        let tableHistory = new TableHistory(dealer, tegomas);
+        let dealer = Number(historyArray[Define.maxPlayers].substring(1,2))-1;
+        if( dealer<0 || Define.maxPlayers <= dealer){
+            throw "Dealer No. out of range: the given value was " + dealer;
+        }
+        let moves = BoardHistory.parseMoveHistory(historyArray.slice(Define.maxPlayers + 1));
+
+        let boardHistory = new BoardHistory(dealer, tegomas);
 
         for(let move of moves){
-            tableHistory.push(move);
+            boardHistory.push(move);
         }
-        return tableHistory;
+        return boardHistory;
     }
 
     public static parseMoveHistory(moveHistory: Array<string>): Array<Move>{
         let moves = new Array<Move>();
 
         if(!moveHistory || moveHistory.length === 0){
-            throw "there is no parsing history";
+            return moves;
         }
-        let attacker: number = Number(moveHistory[0].charAt(0));
+        let attacker: number = Number(moveHistory[0].charAt(0)) - 1;
 
         for(let m of moveHistory){
             let move = Move.fromStr(m, attacker);
@@ -176,6 +184,7 @@ export class TableHistory{
         for(let i=0;i<Define.maxPlayers;i++){
             str.push(this.tegomas[i]);
         }
+        str.push(Define.dealerChar + (this.dealer+1));
         for(let move of this.moveStack){
             str.push(move.toOpenString());
         }

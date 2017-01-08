@@ -47,4 +47,22 @@ describe('Util',()=>{
             Chai.expect(ret[3].length).to.equal(Define.maxFieldLength);
         });
     });
+
+    describe('#getNextTurn', ()=>{
+        it("0->1, 1->2, 2->3, 3->0", ()=>{
+            Chai.expect(Util.getNextTurn(0)).to.equal(1);
+            Chai.expect(Util.getNextTurn(1)).to.equal(2);
+            Chai.expect(Util.getNextTurn(2)).to.equal(3);
+            Chai.expect(Util.getNextTurn(3)).to.equal(0);
+        });
+    });
+
+    describe('#getPreviousTurn', ()=>{
+        it("0->3, 1->0, 2->1, 3->2", ()=>{
+            Chai.expect(Util.getPreviousTurn(0)).to.equal(3);
+            Chai.expect(Util.getPreviousTurn(1)).to.equal(0);
+            Chai.expect(Util.getPreviousTurn(2)).to.equal(1);
+            Chai.expect(Util.getPreviousTurn(3)).to.equal(2);
+        });
+    });
 });

@@ -142,6 +142,9 @@ export class KomaArray{
     }
 
     public static createHandFrom(hand: string):Array<Koma>{
+        if(!hand || hand.length < Define.maxFieldLength){
+            throw "wrong hand string format. it must be 8 charactors.";
+        }
         let a = new Array<Koma>();
         for(let i = 0; i< Define.maxFieldLength; i++){
             a[i] = Koma.fromStr(hand[i]);

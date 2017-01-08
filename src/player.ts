@@ -32,6 +32,9 @@ export default class Player{
     public putKoma(koma: Koma, faceDown:boolean = false):void{
         let i = this.hand.indexOf(koma);
         if(i<0){
+            console.log("player#" + this.no + " does not have " + koma + " in hand");
+            //console.log("the hand: ");
+            //console.log(this.hand);
             throw "Does not have the koma";
         }
         this.hand[i] = Koma.empty;
@@ -91,9 +94,9 @@ export default class Player{
     /**
      * get the hidden koma array(the places are indicated)
      * 
-     * @returns {Array<string>} hidden koma: koma value / visible koma or empty: null
+     * @returns {Array<Koma>} hidden koma: koma value / visible koma or empty: null
      */
-    public getHiddenKoma(): KomaArray{
+    public getHiddenKoma(): Array<Koma>{
         let diff = KomaArray.createEmptyField();
         if(this.field === null || this.hiddenfield === null
             || this.field.length !== this.hiddenfield.length){

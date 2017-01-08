@@ -11,10 +11,10 @@ describe('Core',()=>{
         });
     });
 
-    describe('#createTable', ()=>{
-        it("return table object", ()=>{
-            let table = GoitaCore.createTable();
-            Chai.expect(table.currentPlayer.no).to.equal(0);
+    describe('#createBoard', ()=>{
+        it("return board object", ()=>{
+            let board = GoitaCore.createBoard();
+            Chai.expect(board.currentPlayer.no).to.equal(0);
         });
     });
 });

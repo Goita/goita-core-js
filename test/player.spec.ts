@@ -4,11 +4,6 @@ import {Player, Koma, KomaArray, Define} from '../src';
 import * as Chai from "chai";
 
 describe('Player',()=>{
-
-    beforeEach(()=>{
-
-    });
-
     describe('#constructor', ()=>{
         it("create object", ()=>{
             let player = new Player(1, "11111111");
@@ -54,6 +49,10 @@ describe('Player',()=>{
             let player = new Player(1, "22345678");
             Chai.expect(player.countKoma(Koma.shi)).to.equal(0);
         });
+        it("counts ou including gyoku", ()=>{
+            let player = new Player(1, "22345689");
+            Chai.expect(player.countKoma(Koma.ou)).to.equal(2);
+        });
     });
 
     describe('#putKoma', ()=>{
@@ -67,6 +66,10 @@ describe('Player',()=>{
             player.putKoma(Koma.kaku);
             player.putKoma(Koma.hisha);
             player.putKoma(Koma.ou);
+            Chai.expect(player.fieldCounter).to.equal(8);
+            Chai.expect(player.handCounter).to.equal(0);
+            Chai.expect(KomaArray.toString(player.field)).to.equal("x234x678");
+            Chai.expect(KomaArray.toString(player.hand)).to.equal("00000000");
         });
         it("put an invalid koma", ()=>{
             let player = new Player(1, "11112228");
@@ -104,15 +107,25 @@ describe('Player',()=>{
         });
     });
 
-    describe('#getUniqueTegomas', ()=>{
-        it("in hand", ()=>{
-            let player = new Player(1, "22345678");
-            Chai.expect(player.countKoma(Koma.ou)).to.equal(1);
-            Chai.expect(player.countKoma(Koma.gon)).to.equal(2);
+    describe('#getUniqueHand', ()=>{
+        it("distinct", ()=>{
+            let player = new Player(1, "11233558");
+            Chai.expect(KomaArray.toString(player.getUniqueHand())).to.equal("12358");
         });
-        it("not in koma", ()=>{
-            let player = new Player(1, "22345678");
-            Chai.expect(player.countKoma(Koma.shi)).to.equal(0);
+        it("ou and gyoku", ()=>{
+            let player = new Player(1, "11122789");
+            Chai.expect(KomaArray.toString(player.getUniqueHand())).to.equal("12789");
+        });
+    });
+
+    describe('#getHiddenKoma', ()=>{
+        it("face down list", ()=>{
+            let player = new Player(1, "84322211");
+            player.putKoma(Koma.shi, true);
+            player.putKoma(Koma.gon);
+            player.putKoma(Koma.bakko, true);
+            player.putKoma(Koma.gin);
+            Chai.expect(KomaArray.toString(player.getHiddenKoma())).to.equal("10300000");
         });
     });
 });
