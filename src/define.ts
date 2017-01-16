@@ -11,6 +11,17 @@ export module Define{
   export const shi: string = '1', gon: string = '2', bakko: string = '3', gin: string = '4', kin: string = '5', kaku: string = '6', hisha: string = '7';
   export const ou: string = '8', gyoku: string = '9';
   export const pass: string = 'p';
+  export const yaku: string = 'y';
   export const komaCircle = '11111111112222333344445555667789';
   export const dealerChar: string = 's';
 }
+
+export enum Yaku {
+    none,
+    goshi,
+    rokushi,
+    nanashi,
+    hachishi,
+    goshigoshi_win,
+    goshigoshi_redeal
+  }

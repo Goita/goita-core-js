@@ -13,7 +13,7 @@ describe('Board',()=>{
         it("create object", ()=>{
             let dealer = 2;
             let table = Board.createRandomly(dealer);
-            Chai.expect(table.currentPlayer.no).to.equal(dealer);
+            Chai.expect(table.turnPlayer.no).to.equal(dealer);
             Chai.expect(table.history.lastAttacker).to.equal(dealer);
             Chai.expect(table.history.turn).to.equal(dealer);
             Chai.expect(table.history.moveStack.length).to.equal(0);
@@ -23,7 +23,7 @@ describe('Board',()=>{
     describe('#play', ()=>{
         it("face down", ()=>{
             testBoard.play(Koma.shi, Koma.bakko);
-            Chai.expect(testBoard.currentPlayer.no, "next player's turn").to.equal(1);
+            Chai.expect(testBoard.turnPlayer.no, "next player's turn").to.equal(1);
             Chai.expect(testBoard.history.lastMove.faceDown,"first play must be a face down move").to.equal(true);
         });
         it("match", ()=>{
@@ -187,12 +187,116 @@ describe('Board',()=>{
     describe('#createFromString', ()=>{
         it("testBoard", ()=>{
             let board = Board.createFromString("12345678,12345679,11112345,11112345,s1");
-            Chai.expect(board.currentPlayer.no).to.equal(0);
+            Chai.expect(board.turnPlayer.no).to.equal(0);
             Chai.expect(board.history.moveStack.length).to.equal(0);
             Chai.expect(KomaArray.toString(board.players[0].hand)).to.equal("12345678");
             Chai.expect(KomaArray.toString(board.players[1].hand)).to.equal("12345679");
             Chai.expect(KomaArray.toString(board.players[2].hand)).to.equal("11112345");
             Chai.expect(KomaArray.toString(board.players[3].hand)).to.equal("11112345");
+        });
+    });
+
+    describe('#is5ShiSuspended', ()=>{
+        it("goshi", ()=>{
+            let board = Board.createFromString("11111678,12345679,11112345,23452345,s1");
+            Chai.expect(board.is5ShiSuspended).to.equal(true);
+        });
+        it("not goshi", ()=>{
+            let board = Board.createFromString("11112678,12345679,11112345,13452345,s1");
+            Chai.expect(board.is5ShiSuspended).to.equal(false);
+        });
+    });
+
+    describe('#shiCount', ()=>{
+        it("not goshi", ()=>{
+            let board = Board.createFromString("11112678,12345679,11132345,11452345,s1");
+            Chai.expect(board.shiCount[0]).to.equal(4);
+            Chai.expect(board.shiCount[1]).to.equal(1);
+            Chai.expect(board.shiCount[2]).to.equal(3);
+            Chai.expect(board.shiCount[3]).to.equal(2);
+        });
+        it("goshi", ()=>{
+            let board = Board.createFromString("11111678,12345679,11112345,23452345,s1");
+            Chai.expect(board.shiCount[0]).to.equal(5);
+        });
+    });
+
+    describe('#isEndOfDeal', ()=>{
+        it("goshi continue", ()=>{
+            let board = Board.createFromString("11111678,12345679,11112345,23452345,s1");
+            board.continue5Shi();
+            Chai.expect(board.isEndOfDeal).to.equal(false);
+        });
+        it("goshi redeal", ()=>{
+            let board = Board.createFromString("11111678,12345679,11112345,23452345,s1");
+            board.redeal();
+            Chai.expect(board.isEndOfDeal).to.equal(true);
+        });
+        it("rokushi", ()=>{
+            let board = Board.createFromString("11111167,23456789,11112345,23452345,s1");
+            Chai.expect(board.isEndOfDeal).to.equal(true);
+        });
+        it("nanashi", ()=>{
+            let board = Board.createFromString("11111117,23456789,11172345,23452345,s1");
+            Chai.expect(board.isEndOfDeal).to.equal(true);
+        });
+        it("hachishi", ()=>{
+            let board = Board.createFromString("11111111,23456789,11772345,23452345,s1");
+            Chai.expect(board.isEndOfDeal).to.equal(true);
+        });
+        it("goshigoshi win", ()=>{
+            let board = Board.createFromString("11111678,22345679,11111345,23452345,s1");
+            Chai.expect(board.isEndOfDeal).to.equal(true);
+        });
+        it("goshigoshi redeal", ()=>{
+            let board = Board.createFromString("11111678,11111345,22345679,23452345,s1");
+            Chai.expect(board.isEndOfDeal).to.equal(true);
+        });
+
+        it("end of play", ()=>{
+            let board = Board.createFromString("22221678,11111345,11345679,11345345,s1,112,2p,3p,4p,162,2p,3p,4p,172,2p,3p,4p,128");
+            Chai.expect(board.isEndOfDeal).to.equal(true);
+        });
+    });
+
+    describe('#getFinishState', ()=>{
+        it("goshi redeal", ()=>{
+            let board = Board.createFromString("11111678,12345679,11112345,23452345,s1");
+            board.redeal();
+            Chai.expect(board.getFinishState().redeal).to.equal(true);
+            Chai.expect(board.getFinishState().nextDealerNo).to.equal(0);
+        });
+        it("rokushi", ()=>{
+            let board = Board.createFromString("23456789,11112345,23452345,11111167,s1");
+            Chai.expect(board.getFinishState().redeal).to.equal(false);
+            Chai.expect(board.getFinishState().nextDealerNo).to.equal(3);
+        });
+        it("nanashi", ()=>{
+            let board = Board.createFromString("23456789,11162345,23452345,11111117,s1");
+            Chai.expect(board.getFinishState().redeal).to.equal(false);
+            Chai.expect(board.getFinishState().nextDealerNo).to.equal(3);
+        });
+        it("hachishi", ()=>{
+            let board = Board.createFromString("23456789,11772345,23452345,11111111,s1");
+            Chai.expect(board.getFinishState().redeal).to.equal(false);
+            Chai.expect(board.getFinishState().nextDealerNo).to.equal(3);
+        });
+        it("goshigoshi win", ()=>{
+            let board = Board.createFromString("11111678,22345679,11111345,23452345,s1");
+            Chai.expect(board.getFinishState().redeal).to.equal(false);
+            Chai.expect(board.getFinishState().nextDealerNo).to.equal(0);
+        });
+        it("goshigoshi redeal", ()=>{
+            let board = Board.createFromString("11111678,11111345,22345679,23452345,s2");
+            Chai.expect(board.getFinishState().redeal).to.equal(true);
+            Chai.expect(board.getFinishState().nextDealerNo).to.equal(1);
+        });
+
+        it("end of play", ()=>{
+            let board = Board.createFromString("22221678,11113345,11145679,11345345,s1,112,2p,3p,4p,162,2p,3p,4p,172,2p,3p,4p,128");
+            console.log(board.toHistoryString());
+            Chai.expect(board.getFinishState().redeal).to.equal(false);
+            Chai.expect(board.getFinishState().nextDealerNo).to.equal(0);
         });
     });
 });

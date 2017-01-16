@@ -1,4 +1,4 @@
-export {Define} from './define';
+export {Define, Yaku} from './define';
 export {Util} from './util';
 export {Koma, KomaArray } from './koma';
 export {Move, BoardHistory} from './history';

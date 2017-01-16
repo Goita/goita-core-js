@@ -14,7 +14,7 @@ describe('Core',()=>{
     describe('#createBoard', ()=>{
         it("return board object", ()=>{
             let board = GoitaCore.createBoard();
-            Chai.expect(board.currentPlayer.no).to.equal(0);
+            Chai.expect(board.turnPlayer.no).to.equal(0);
         });
     });
 });

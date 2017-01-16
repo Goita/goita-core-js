@@ -17,7 +17,7 @@ export class Move{
         this.pass = false;
         this.faceDown = false;
         this.finish = false;
-        this.finish = false;
+        this.doubleUp = false;
     }
 
     /** block and attack move */
@@ -74,34 +74,75 @@ export class Move{
     }
 
     public toString():string{
-        if(this.pass){return (this.no+1) + Define.pass;}
+        if(this.pass || this.doubleUp){
+            return this.toOpenString();
+        }
         return (this.no+1) + (this.faceDown ? Define.hidden : this.block.value) + this.attack.value;
     }
 
     public toOpenString():string{
-        if(this.pass){return (this.no+1) + Define.pass;}
+        if(this.pass){
+            return (this.no+1) + Define.pass;
+        }
         return (this.no+1) + this.block.value + this.attack.value;
+    }
+}
+
+/** finish state of board */
+export class FinishState{
+    nextDealerNo: number;
+    redeal: boolean;
+    aborted: boolean;
+
+    private constructor(){
+        this.nextDealerNo = -1;
+        this.redeal = false;
+        this.aborted = false;
+    }
+
+    public static ofFinish(no: number): FinishState{
+        let f = new FinishState();
+        f.nextDealerNo = no;
+        return f;
+    }
+
+    public static ofRedeal(no: number): FinishState{
+        let f = new FinishState();
+        f.nextDealerNo = no;
+        f.redeal = true;
+        return f;
+    }
+
+    public static ofAborted(no: number): FinishState{
+        let f = new FinishState();
+        f.nextDealerNo = no;
+        f.aborted = true;
+        return f;
     }
 }
 
 export class BoardHistory{
     public moveStack : Array<Move>;
-    public tegomas : Array<string>;
+    public hands : Array<string>;
     public attackerLog: Array<number>;
     public turn: number;
     public dealer:number;
+    public kingUsed: number;
+    public finishState: FinishState;
 
-    public constructor(dealer: number, tegomas: Array<string>){
-        this.init(dealer, tegomas);
+    public constructor(dealer: number, hands: Array<string>){
+        this.init(dealer, hands);
     }
 
-    private init(dealer: number, tegomas: Array<string>){
+    private init(dealer: number, hands: Array<string>){
         this.moveStack = new Array<Move>();
-        this.tegomas = tegomas;
+        this.hands = hands;
         this.attackerLog = new Array<number>();
         this.attackerLog.push(dealer);
         this.turn = dealer;
         this.dealer = dealer;
+        this.kingUsed = 0;
+        this.finishState = null;
     }
 
     public get lastMove():Move{
@@ -123,19 +164,48 @@ export class BoardHistory{
     }
 
     public push(move: Move){
+        //replace if the move is finish one
+        let attackCount = this.attackerLog.filter(n=>n === move.no).length;
+        if(attackCount === 3){
+            if(this.lastAttacker === move.no && move.attack.equals(move.block)){
+                move = Move.ofDoubleUpFinish(move.no, move.block, move.attack);
+            }else{
+                move = Move.ofFinish(move.no, move.block, move.attack);
+            }
+        }
+
         this.moveStack.push(move);
         if(!move.pass){
             this.attackerLog.push(move.no);
+            if( (move.block.isKing && !move.faceDown)){
+                this.kingUsed++;
+            }
+            if(move.attack.isKing){
+                this.kingUsed++;
+            }
         }
         this.turn = Util.getNextTurn(move.no);
+
+        if(this.lastMove.finish)
+        {
+            this.finishState = FinishState.ofFinish(this.lastMove.no);
+        }
     }
 
     public pop(): Move{
         let move = this.moveStack.pop();
         if(!move.pass){
             this.attackerLog.pop();
+
+            if( (move.block.isKing && !move.faceDown)){
+                this.kingUsed--;
+            }
+            if(move.attack.isKing){
+                this.kingUsed--;
+            }
         }
         this.turn = Util.getPreviousTurn(move.no);
+
         return move;
     }
 
@@ -182,7 +252,7 @@ export class BoardHistory{
     public toString(): string{
         let str = new Array<string>();
         for(let i=0;i<Define.maxPlayers;i++){
-            str.push(this.tegomas[i]);
+            str.push(this.hands[i]);
         }
         str.push(Define.dealerChar + (this.dealer+1));
         for(let move of this.moveStack){

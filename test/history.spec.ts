@@ -10,55 +10,55 @@ describe('Move',()=>{
 
     describe('#fromStr', ()=>{
         it("parses FaceDown move string", ()=>{
-            let move1 = Move.fromStr("113", 0);
-            Chai.expect(move1.no).to.equal(0);
-            Chai.expect(move1.block).to.equal(Koma.shi);
-            Chai.expect(move1.attack).to.equal(Koma.bakko);
-            Chai.expect(move1.pass).to.equal(false);
-            Chai.expect(move1.faceDown).to.equal(true);
+            let move = Move.fromStr("113", 0);
+            Chai.expect(move.no).to.equal(0);
+            Chai.expect(move.block).to.equal(Koma.shi);
+            Chai.expect(move.attack).to.equal(Koma.bakko);
+            Chai.expect(move.pass).to.equal(false);
+            Chai.expect(move.faceDown).to.equal(true);
         });
         it("parses Match move string", ()=>{
-            let move1 = Move.fromStr("235", 0);
-            Chai.expect(move1.no).to.equal(1);
-            Chai.expect(move1.block).to.equal(Koma.bakko);
-            Chai.expect(move1.attack).to.equal(Koma.kin);
-            Chai.expect(move1.pass).to.equal(false);
-            Chai.expect(move1.faceDown).to.equal(false);
+            let move = Move.fromStr("235", 0);
+            Chai.expect(move.no).to.equal(1);
+            Chai.expect(move.block).to.equal(Koma.bakko);
+            Chai.expect(move.attack).to.equal(Koma.kin);
+            Chai.expect(move.pass).to.equal(false);
+            Chai.expect(move.faceDown).to.equal(false);
         });
         it("parses Pass move string", ()=>{
-            let move1 = Move.fromStr("3p", 1);
-            Chai.expect(move1.no).to.equal(2);
-            Chai.expect(move1.pass).to.equal(true);
+            let move = Move.fromStr("3p", 1);
+            Chai.expect(move.no).to.equal(2);
+            Chai.expect(move.pass).to.equal(true);
         });
     });
 
     describe('#toString', ()=>{
         it("describes FaceDown move to string", ()=>{
-            let move1 = Move.ofFaceDown(0,Koma.kin, Koma.gin);
-            Chai.expect(move1.toString()).to.equal("1x4");
+            let move = Move.ofFaceDown(0,Koma.kin, Koma.gin);
+            Chai.expect(move.toString()).to.equal("1x4");
         });
         it("describes Match move to string", ()=>{
-            let move1 = Move.ofMatch(3,Koma.bakko, Koma.hisha);
-            Chai.expect(move1.toString()).to.equal("437");
+            let move = Move.ofMatch(3,Koma.bakko, Koma.hisha);
+            Chai.expect(move.toString()).to.equal("437");
         });
         it("describes Pass move to string", ()=>{
-            let move1 = Move.ofPass(2);
-            Chai.expect(move1.toString()).to.equal("3p");
+            let move = Move.ofPass(2);
+            Chai.expect(move.toString()).to.equal("3p");
         });
     });
 
     describe('#toOpenString', ()=>{
         it("describes FaceDown move to string", ()=>{
-            let move1 = Move.ofFaceDown(0,Koma.kin, Koma.gin);
-            Chai.expect(move1.toOpenString()).to.equal("154");
+            let move = Move.ofFaceDown(0,Koma.kin, Koma.gin);
+            Chai.expect(move.toOpenString()).to.equal("154");
         });
         it("describes Match move to string", ()=>{
-            let move1 = Move.ofMatch(3,Koma.bakko, Koma.hisha);
-            Chai.expect(move1.toOpenString()).to.equal("437");
+            let move = Move.ofMatch(3,Koma.bakko, Koma.hisha);
+            Chai.expect(move.toOpenString()).to.equal("437");
         });
         it("describes Pass move to string", ()=>{
-            let move1 = Move.ofPass(2);
-            Chai.expect(move1.toOpenString()).to.equal("3p");
+            let move = Move.ofPass(2);
+            Chai.expect(move.toOpenString()).to.equal("3p");
         });
     });
 });
@@ -102,10 +102,15 @@ describe('BoardHistory',()=>{
         });
         it("from test history",()=>{
             let history = BoardHistory.fromString("12345678,12345679,11112345,11112345,s1");
-            Chai.expect(history.tegomas[0]).to.equal("12345678");
-            Chai.expect(history.tegomas[1]).to.equal("12345679");
-            Chai.expect(history.tegomas[2]).to.equal("11112345");
-            Chai.expect(history.tegomas[3]).to.equal("11112345");
+            Chai.expect(history.hands[0]).to.equal("12345678");
+            Chai.expect(history.hands[1]).to.equal("12345679");
+            Chai.expect(history.hands[2]).to.equal("11112345");
+            Chai.expect(history.hands[3]).to.equal("11112345");
+        });
+
+        it("from finished board", ()=>{
+            let history = BoardHistory.fromString("22221678,11113345,11145679,11345345,s1,112,2p,3p,4p,162,2p,3p,4p,172,2p,3p,4p,128");
+            Chai.expect(history.moveStack.length).to.equal(13);
         });
     });
 

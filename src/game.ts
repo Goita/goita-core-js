@@ -33,7 +33,7 @@ export default class Game{
 
         if(this.board && this.board.isEndOfDeal){
             this.history.push(this.board);
-            dealer = this.board.history.lastMove.no;
+            dealer = this.board.getFinishState().nextDealerNo;
         }else{
             dealer = Util.rand.integer(0,3);
         }
