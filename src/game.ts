@@ -29,7 +29,7 @@ export default class Game{
 
     /** set up a new board */
     public startNewDeal(){
-        let dealer;
+        let dealer: number;
 
         if(this.board && this.board.isEndOfDeal){
             this.history.push(this.board);

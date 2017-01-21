@@ -1,5 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
-
 import {Define} from './define';
 import * as Random from 'random-js';
 

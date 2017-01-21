@@ -9,15 +9,20 @@
         "noImplicitUseStrict": true,
         "importHelpers": true,
         "newLine": "CRLF",
-        "removeComments": false,
+        "removeComments": true,
         "preserveConstEnums": true,
         "outDir": "lib",
         "sourceMap": true,
         "declaration": true,
-        "watch": true
+        "watch": false,
+        "typeRoots": [
+            "./node_modules/@types"
+        ]
     },
-    "files": [
-        "typings/index.d.ts",
-        "src/index.ts"
+    "include": [
+        "src/**.*"
+    ],
+    "exclude": [
+        "test/**.*"
     ]
 }
