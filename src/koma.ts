@@ -65,7 +65,10 @@ export class Koma{
     }
 
     /** return if this koma equals to the given koma. exception: "The OU equals the GYOKU" */
-    public equals(target:Koma):boolean{
+    public equals(target: Koma):boolean{
+        if(target === undefined || target === null){
+            return false;
+        }
         if(this.isKing && target.isKing)
         {
             return true;
@@ -75,6 +78,9 @@ export class Koma{
 
     /** return if this koma equals to the given koma. */
     public equalsExact(target:Koma):boolean{
+        if(target === undefined || target === null){
+            return false;
+        }
         return this.value === target.value;
     }
 
@@ -133,26 +139,44 @@ export class KomaArray{
         return -KomaArray.comparerDesc(a, b);
     }
 
-    public static createEmptyField(): Array<Koma>{
+    public static getUnique(target: Koma[]): Array<Koma>{
+        let uniqueList = new Array<Koma>();
+        for(let koma of target){
+            if(koma.equals(Koma.empty)){
+                continue;
+            }
+            if(KomaArray.containsExact(uniqueList, koma)){
+                continue;
+            }
+            uniqueList.push(koma);
+        }
+        return uniqueList;
+    }
+
+    public static createFrom(hand_or_field: string){
+        if(!hand_or_field || hand_or_field.length < Define.maxFieldLength){
+            throw "wrong hand/field string format. it must be 8 charactors.";
+        }
         let a = new Array<Koma>();
-        for(let i=0;i<Define.maxFieldLength;i++){
-            a[i] = Koma.empty;
+        for(let i = 0; i< Define.maxFieldLength; i++){
+            a[i] = Koma.fromStr(hand_or_field[i]);
         }
         return a;
     }
 
-    public static createHandFrom(hand: string):Array<Koma>{
-        if(!hand || hand.length < Define.maxFieldLength){
-            throw "wrong hand string format. it must be 8 charactors.";
+    public static createEmptyField(): Array<Koma>{
+        let str = "";
+        for(let i=0;i<Define.maxFieldLength;i++){
+            str += Koma.empty.toString();
         }
-        let a = new Array<Koma>();
-        for(let i = 0; i< Define.maxFieldLength; i++){
-            a[i] = Koma.fromStr(hand[i]);
-        }
-        return a;
+        return KomaArray.createFrom(str);
     }
 
     public static toString(target:Array<Koma>): string{
         return target.join('');
+    }
+
+    public static getLength(target:Array<Koma>): number{
+        return target.filter((k)=>k !== Koma.empty).length;
     }
 }

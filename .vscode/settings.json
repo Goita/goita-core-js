@@ -4,9 +4,7 @@
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
-        "**/.DS_Store": true,
-        "lib/*.map": true
-    },
-    "typescript.check.workspaceVersion": false,
-    "typescript.tsdk": "./node_modules/typescript/lib"
+        "**/.DS_Store": true
+    }
+    //,"typescript.tsdk": "./node_modules/typescript/lib"
 }

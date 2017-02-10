@@ -10,6 +10,10 @@ typings/
 
 # codes
 test/
+*.debug.ts
+*.debug.d.ts
+*.debug.js
+*.debug.map
 
 # mocha temp
 tmp/

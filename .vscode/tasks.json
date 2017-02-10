@@ -26,11 +26,12 @@
 	"showOutput": "always",
 
 	// Tell the tsc compiler to use the tsconfig.json from the open folder.
-	"args": ["-p", "."],
+	"args": ["-p", ".", "-w"],
 
 	// use the standard tsc problem matcher to find compile problems
 	// in the output.
-	"problemMatcher": "$tsc"
+	"problemMatcher": "$tsc",
+	"echoCommand": true
 }
 
 // A task runner configuration for gulp. Gulp provides a less task

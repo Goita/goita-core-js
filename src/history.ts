@@ -44,6 +44,8 @@ export class Move{
     public static ofPass(no: number):Move{
         let move = new Move(no);
         move.describe = "Pass";
+        move.attack = null;
+        move.block = null;
         move.pass = true;
         return move;
     }
@@ -86,6 +88,14 @@ export class Move{
         }
         return (this.no+1) + this.block.value + this.attack.value;
     }
+
+    public toScore(): number{
+        if(!this.finish){
+            return 0;
+        }
+        let score = this.attack.Score;
+        return this.doubleUp ? score * 2 : score;
+    }
 }
 
 /** finish state of board */
@@ -123,12 +133,14 @@ export class FinishState{
 
 export class BoardHistory{
     public moveStack : Array<Move>;
-    public hands : Array<string>;
     public attackerLog: Array<number>;
     public turn: number;
-    public dealer:number;
     public kingUsed: number;
     public finishState: FinishState;
+
+    //initial static info
+    public hands : Array<string>;
+    public dealer:number;
 
     public constructor(dealer: number, hands: Array<string>){
         this.init(dealer, hands);
@@ -138,22 +150,27 @@ export class BoardHistory{
         this.moveStack = new Array<Move>();
         this.hands = hands;
         this.attackerLog = new Array<number>();
-        this.attackerLog.push(dealer);
         this.turn = dealer;
         this.dealer = dealer;
         this.kingUsed = 0;
         this.finishState = null;
     }
 
-    public get lastMove():Move{
+    public get lastMove(): Move{
+        if(this.moveStack.length === 0) {
+            return null;
+        }
         return this.moveStack[this.moveStack.length-1];
     }
 
-    public get lastAttacker():number{
+    public get lastAttacker(): number{
+        if(this.attackerLog.length === 0){
+            return this.dealer;
+        }
         return this.attackerLog[this.attackerLog.length - 1];
     }
 
-    public get lastAttackMove():Move{
+    public get lastAttackMove(): Move{
         for(let i=this.moveStack.length-1;i>=0; i--){
             let m = this.moveStack[i];
             if(!m.pass){
@@ -166,7 +183,7 @@ export class BoardHistory{
     public push(move: Move){
         //replace if the move is finish one
         let attackCount = this.attackerLog.filter(n=>n === move.no).length;
-        if(attackCount === 3){
+        if(attackCount === 3 && !move.pass){
             if(this.lastAttacker === move.no && move.attack.equals(move.block)){
                 move = Move.ofDoubleUpFinish(move.no, move.block, move.attack);
             }else{
@@ -204,7 +221,7 @@ export class BoardHistory{
                 this.kingUsed--;
             }
         }
-        this.turn = Util.getPreviousTurn(move.no);
+        this.turn = Util.getPreviousTurn(this.turn);
 
         return move;
     }

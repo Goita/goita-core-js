@@ -1,18 +1,19 @@
 import {Define} from './define';
-import {Koma} from './koma';
-import { default as Player } from './player';
+import {Koma, KomaArray} from './koma';
+import {Player} from './player';
 import {Move, FinishState, BoardHistory} from './history';
+import {ThinkingInfo} from './thinkinginfo';
 import {Util} from './util';
 
 /** Goita Board Class */
-export default class Board{
+export class Board {
     public players: Array<Player>;
     public history: BoardHistory;
     private redoStack: Array<Move>;
     private suspended5Shi: boolean;
     private _shiCount: Array<number>;
 
-    private constructor(){
+    private constructor() {
     }
 
     public get isEndOfDeal(): boolean{
@@ -197,9 +198,11 @@ export default class Board{
     public undo(): void{
         let move = this.history.pop();
         this.redoStack.push(move);
-        let player = this.players[move.no];
-        player.pickLastKoma();
-        player.pickLastKoma();
+        if(!move.pass){
+            let player = this.players[move.no];
+            player.pickLastKoma();
+            player.pickLastKoma();
+        }
     }
 
     public canRedo():boolean{
@@ -213,65 +216,6 @@ export default class Board{
         }
     }
 
-    public getPossibleMoves(): Array<Move>{
-        let moves = new Array<Move>();
-        let player = this.turnPlayer;
-        if(player.no === this.history.lastAttacker){
-            //The last attack passed all the others
-            for(let faceDown of player.getUniqueHand()){
-                for(let attack of player.getUniqueHand()){
-                    if(faceDown.equals(attack)){
-                        if(player.countKoma(faceDown) < 2){
-                            continue;
-                        }
-                    }
-                    if(attack.isKing){
-                        if(player.countKoma(Koma.ou) < 2 && this.history.kingUsed === 0){
-                            continue;
-                        }
-                    }
-                    moves.push(Move.ofFaceDown(player.no, faceDown, attack));
-                }
-            }
-        }else{
-            //The other player's attack
-            moves.push(Move.ofPass(player.no));
-            let lastAttack = this.history.lastAttackMove.attack;
-            if(player.hasKoma(lastAttack)){
-                for(let attack of player.getUniqueHand()){
-                    if(lastAttack.equals(attack) && player.countKoma(attack) < 2){
-                        continue;
-                    }
-                    if(attack.isKing){
-                        if(player.countKoma(Koma.ou) < 2 && this.history.kingUsed === 0){
-                            continue;
-                        }
-                    }
-                    moves.push(Move.ofMatch(player.no, lastAttack, attack));
-                }
-            }
-            if(player.hasKoma(Koma.ou) && Koma.ou.canBlock(lastAttack)){
-                for(let attack of player.getUniqueHand()){
-                    if(attack.isKing && player.countKoma(Koma.ou) < 2){
-                        continue;
-                    }
-                    if(attack.isKing){
-                        moves.push(Move.ofMatch(player.no, Koma.ou, Koma.gyoku));
-                        moves.push(Move.ofMatch(player.no, Koma.gyoku, Koma.ou));
-                    }else{
-                        if(player.hasKomaExact(Koma.ou)){
-                            moves.push(Move.ofMatch(player.no, Koma.ou, attack));
-                        }
-                        else{
-                            moves.push(Move.ofMatch(player.no, Koma.gyoku, attack));
-                        }
-                    }
-                }
-            }
-        }
-        return moves;
-    }
-
     public static createRandomly(dealer: number):Board{
         let board = new Board();
         let tegomas = Util.dealTegomas();
@@ -282,18 +226,27 @@ export default class Board{
     /** create from history string */
     public static createFromString(historyStr:string):Board{
         let history = BoardHistory.fromString(historyStr);
-        let table = new Board();
-        table.init(history.dealer, history.hands);
-        while(history.moveStack.length > 0){
-            table.continue5Shi();
-            table.playMove(history.pop());
+        let board = new Board();
+        board.init(history.dealer, history.hands);
+        for(let i=0;i<history.moveStack.length;i++){
+            board.continue5Shi();
+            board.playMove(history.moveStack[i]);
         }
 
-        return table;
+        return board;
     }
 
     /** table to history string */
     public toHistoryString():string{
         return this.history.toString();
+    }
+
+    public toThinkingInfo(): ThinkingInfo{
+        let turn = this.turnPlayer.no;
+        let fields = new Array<string>();
+        for(let p of this.players){
+            fields.push(KomaArray.toString(p.field));
+        }
+        return new ThinkingInfo(turn, KomaArray.toString(this.turnPlayer.hand), fields, this.history.lastAttackMove);
     }
 }

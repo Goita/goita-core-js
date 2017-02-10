@@ -1,5 +1,5 @@
-import {default as Game} from "./game";
-import {default as Board} from "./board";
+import {Game} from "./game";
+import {Board} from "./board";
 
 /** GoitaCore factory class */
 export class Factory{

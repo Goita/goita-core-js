@@ -42,4 +42,8 @@ export module Util{
     export function getPreviousTurn(turn:number):number{
         return (turn + 3) % 4;
     }
+
+    export function isSameTeam(no1: number, no2:number) :boolean{
+        return (no1 + no2) % 2 === 0;
+    }
 }

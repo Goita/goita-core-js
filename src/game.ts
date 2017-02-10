@@ -1,9 +1,9 @@
 import {Define} from './define';
 import {Util} from './util';
-import {default as Board} from './board';
+import {Board} from './board';
 
 /** Goita Game Class */
-export default class Game{
+export class Game{
     public winScore: number;
     public roundCount: number;
     public scores: Array<number>;

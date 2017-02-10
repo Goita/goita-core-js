@@ -111,6 +111,7 @@ describe('BoardHistory',()=>{
         it("from finished board", ()=>{
             let history = BoardHistory.fromString("22221678,11113345,11145679,11345345,s1,112,2p,3p,4p,162,2p,3p,4p,172,2p,3p,4p,128");
             expect(history.moveStack.length).to.equal(13);
+            expect(history.lastMove.finish).to.be.true;
         });
     });
 

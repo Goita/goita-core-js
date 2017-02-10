@@ -1,7 +1,7 @@
 import {Koma, KomaArray} from './koma';
 import {Define} from './define';
 
-export default class Player{
+export class Player{
     /** player No. */
     public no :number;
     /** player's koma in hand */
@@ -22,7 +22,7 @@ export default class Player{
 
     private init(no: number, hand: string){
         this.no = no;
-        this.hand = KomaArray.createHandFrom(hand);
+        this.hand = KomaArray.createFrom(hand);
         this.field = KomaArray.createEmptyField();
         this.hiddenfield = KomaArray.createEmptyField();
         this.handCounter = Define.maxFieldLength;
@@ -78,17 +78,7 @@ export default class Player{
     }
 
     public getUniqueHand(): Array<Koma>{
-        let uniqueHand = new Array<Koma>();
-        for(let koma of this.hand){
-            if(koma.equals(Koma.empty)){
-                continue;
-            }
-            if(KomaArray.containsExact(uniqueHand, koma)){
-                continue;
-            }
-            uniqueHand.push(koma);
-        }
-        return uniqueHand;
+        return KomaArray.getUnique(this.hand);
     }
 
     /**

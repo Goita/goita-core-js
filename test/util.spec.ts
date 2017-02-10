@@ -65,4 +65,11 @@ describe('Util',()=>{
             expect(Util.getPreviousTurn(3)).to.equal(2);
         });
     });
+
+    describe('#isSameTeam', ()=>{
+        it("partner : true, opponent : false", ()=>{
+            expect(Util.isSameTeam(0, 2)).to.be.true;
+            expect(Util.isSameTeam(0, 1)).to.be.false;
+        });
+    });
 });

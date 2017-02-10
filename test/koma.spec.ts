@@ -39,7 +39,7 @@ describe('KomaArray',()=>{
     });
     describe('#createHandFrom', ()=>{
         it("hand array from string", ()=>{
-            list = KomaArray.createHandFrom("11223344");
+            list = KomaArray.createFrom("11223344");
             expect(KomaArray.toString(list)).to.equals("11223344");
         });
     });

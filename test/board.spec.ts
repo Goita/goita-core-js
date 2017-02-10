@@ -121,26 +121,6 @@ describe('Board',()=>{
         });
     });
 
-    describe('#getPossibleMoves', ()=>{
-        it("first turn", ()=>{
-            //hand: 12345678 -> 1?(6), 2?(6), 3?(6), 4?(6), 5?(6), 6?(6), 7?(6), 8?(7) = 49 
-            let moves = testBoard.getPossibleMoves();
-            //moves.forEach(m=>console.log(m.toOpenString()));
-            expect(moves.some(m=>m.pass),"dealer cannot pass").to.equal(false);
-            expect(moves.length).to.equal(49);
-            expect(moves.every(m=>testBoard.canPlayMove(m))).to.be.true;
-        });
-        it("match turn", ()=>{
-            testBoard.play(Koma.shi, Koma.bakko);
-            //attack:3, hand: 12345679 -> pass(1), 3?(6), 9?:(7) = 14 
-            let moves = testBoard.getPossibleMoves();
-            //moves.forEach(m=>console.log(m.toOpenString()));
-            expect(moves.some(m=>m.pass), "can pass").to.equal(true);
-            expect(moves.length).to.equal(14);
-            expect(moves.every(m=>testBoard.canPlayMove(m))).to.be.true;
-        });
-    });
-
     describe('#undo', ()=>{
         it("rollbacks history", ()=>{
             let initialState = testBoard.toHistoryString();
@@ -148,6 +128,14 @@ describe('Board',()=>{
             testBoard.undo();
             let rollbackedState = testBoard.toHistoryString();
             expect(initialState).to.equal(rollbackedState);
+        });
+        it("undo pass", ()=>{
+            let before = Board.createFromString("12345678,12345679,11112345,11112345,s1,112");
+            let after = Board.createFromString("12345678,12345679,11112345,11112345,s1,112");
+            after.pass();
+            after.undo();
+            expect(after.turnPlayer.no, "check turn player No.").to.equal(before.turnPlayer.no);
+            expect(after.history.attackerLog.join()).to.equal(before.history.attackerLog.join());
         });
     });
 
@@ -169,6 +157,16 @@ describe('Board',()=>{
             testBoard.redo();
             let resumedState = testBoard.toHistoryString();
             expect(initialState).to.equal(resumedState);
+        });
+        it("redo pass", ()=>{
+            let before = Board.createFromString("12345678,12345679,11112345,11112345,s1,112");
+            let after = Board.createFromString("12345678,12345679,11112345,11112345,s1,112");
+            before.pass();
+            after.pass();
+            after.undo();
+            after.redo();
+            expect(after.turnPlayer.no, "check turn player No.").to.equal(before.turnPlayer.no);
+            expect(after.history.attackerLog.join()).to.equal(before.history.attackerLog.join());
         });
     });
 
@@ -193,6 +191,45 @@ describe('Board',()=>{
             expect(KomaArray.toString(board.players[1].hand)).to.equal("12345679");
             expect(KomaArray.toString(board.players[2].hand)).to.equal("11112345");
             expect(KomaArray.toString(board.players[3].hand)).to.equal("11112345");
+        });
+        it("end of playing", ()=>{
+            let board = Board.createFromString("22221678,11111345,11345679,11345345,s1,112,2p,3p,4p,162,2p,3p,4p,172,2p,3p,4p,128");
+            expect(board.history.lastMove.finish).to.be.true;
+        });
+    });
+
+    describe('#toThinkingInfo', ()=>{
+        it("first turn", ()=>{
+            let info = testBoard.toThinkingInfo();
+            let turn = testBoard.turnPlayer.no;
+            expect(info.hand).to.equal(testBoard.history.hands[turn]);
+            expect(info.fields[0]).to.equal(KomaArray.toString(testBoard.players[0].field));
+            expect(info.fields[1]).to.equal(KomaArray.toString(testBoard.players[1].field));
+            expect(info.fields[2]).to.equal(KomaArray.toString(testBoard.players[2].field));
+            expect(info.fields[3]).to.equal(KomaArray.toString(testBoard.players[3].field));
+            expect(info.lastAttack).is.null;
+            expect(info.turn).to.equal(turn);
+            expect(info.kingUsed).to.equal(testBoard.history.kingUsed > 0);
+        });
+        it("second turn", ()=>{
+            testBoard.play(Koma.shi, Koma.bakko);
+            let info = testBoard.toThinkingInfo();
+            let turn = testBoard.turnPlayer.no;
+            expect(info.hand).to.equal(testBoard.history.hands[turn]);
+            expect(info.fields[0]).to.equal(KomaArray.toString(testBoard.players[0].field));
+            expect(info.fields[1]).to.equal(KomaArray.toString(testBoard.players[1].field));
+            expect(info.fields[2]).to.equal(KomaArray.toString(testBoard.players[2].field));
+            expect(info.fields[3]).to.equal(KomaArray.toString(testBoard.players[3].field));
+            expect(info.lastAttack.toOpenString()).to.equal(testBoard.history.lastMove.toOpenString());
+            expect(info.turn).to.equal(turn);
+            expect(info.kingUsed).to.equal(testBoard.history.kingUsed > 0);
+        });
+
+        it("end of playing", ()=>{
+            let board = Board.createFromString("22221678,11111345,11345679,11345345,s1,112,2p,3p,4p,162,2p,3p,4p,172,2p,3p,4p,128");
+            let info = board.toThinkingInfo();
+            expect(info.lastAttack.finish).to.be.true;
+            expect(info.fields[0]).to.equal("x2x2x228");
         });
     });
 
@@ -294,7 +331,7 @@ describe('Board',()=>{
 
         it("end of play", ()=>{
             let board = Board.createFromString("22221678,11113345,11145679,11345345,s1,112,2p,3p,4p,162,2p,3p,4p,172,2p,3p,4p,128");
-            console.log(board.toHistoryString());
+            expect(board.getFinishState().nextDealerNo).to.equal(0);
             expect(board.getFinishState().redeal).to.equal(false);
             expect(board.getFinishState().nextDealerNo).to.equal(0);
         });
