@@ -4,7 +4,7 @@ export {Koma, KomaArray } from './koma';
 export {Move, BoardHistory} from './history';
 export {Player} from './player';
 export {Board} from './board';
-export {ThinkingInfo} from './ThinkingInfo';
+export {ThinkingInfo} from './thinkinginfo';
 export {Solver} from './solver';
 export {Factory} from './factory';
 export {AI, EvaluatedMove} from './ai.interface';

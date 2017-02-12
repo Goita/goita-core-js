@@ -1,4 +1,4 @@
-import {Move, Koma, ThinkingInfo} from '../src';
+import {Move, Koma, Board, ThinkingInfo} from '../src';
 import * as Chai from "chai";
 
 const expect = Chai.expect;
@@ -22,6 +22,16 @@ describe('ThinkingInfo',()=>{
             //moves.forEach(m=>console.log(m.toOpenString()));
             expect(moves.some(m=>m.pass), "can pass").to.equal(true);
             expect(moves.length).to.equal(14);
+        });
+
+        it("finish move", ()=>{
+            const h = "12345678,12345679,11112345,11112345,s1,113,2p,3p,431,1p,2p,315,4p,156,267,3p,4p,174,242,3p,4p";
+            const board = Board.createFromString(h);
+            const info = board.toThinkingInfo();
+            const moves = info.getPossibleMoves();
+            //must contain pass & gon-ou finish move
+            expect(moves.some(m=>m.finish && m.attack === Koma.ou && m.block === Koma.gon)).to.be.true;
+            expect(moves.some(m=>m.pass)).to.be.true;
         });
         it("end of playing", ()=>{
             //attack:3, hand: 12345679 -> pass(1), 3?(6), 9?:(7) = 14 

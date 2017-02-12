@@ -83,7 +83,7 @@ export class Player{
 
     /**
      * get the hidden koma array(the places are indicated)
-     * 
+     *
      * @returns {Array<Koma>} hidden koma: koma value / visible koma or empty: null
      */
     public getHiddenKoma(): Array<Koma>{

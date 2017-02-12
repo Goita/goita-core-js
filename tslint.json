@@ -9,8 +9,7 @@
 		"no-var-keyword": true,
 		"no-trailing-whitespace": true,
 		"no-unused-new": true,
-		"no-unused-variable": true,
 		"indent": [true, "spaces"],
-		"linebreak-style": [true, "CRLF"]
+		"linebreak-style": [true, "LF"]
 	}
 }

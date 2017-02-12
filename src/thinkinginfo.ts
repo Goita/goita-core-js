@@ -19,10 +19,12 @@ export class ThinkingInfo{
 
     public getPossibleMoves(): Array<Move>{
         let moves = new Array<Move>();
-        let hand = KomaArray.createFrom(this.hand);
         if(this.lastAttack && this.lastAttack.finish){
             return moves;
         }
+        const hand = KomaArray.createFrom(this.hand);
+        const myfield = KomaArray.createFrom(this.fields[this.turn]);
+
         if(!this.lastAttack || this.turn === this.lastAttack.no){
             //The last attack passed all the others
             for(let faceDown of KomaArray.getUnique(hand)){
@@ -32,12 +34,20 @@ export class ThinkingInfo{
                             continue;
                         }
                     }
-                    if(attack.isKing){
-                        if(KomaArray.count(hand, Koma.ou) < 2 && !this.kingUsed){
-                            continue;
+                    if(KomaArray.getLength(myfield) < 6){
+                        if(attack.isKing){
+                            if(KomaArray.count(hand, Koma.ou) < 2 && !this.kingUsed){
+                                continue;
+                            }
+                        }
+                        moves.push(Move.ofFaceDown(this.turn, faceDown, attack));
+                    }else{
+                        if(faceDown.equals(attack)){
+                            moves.push(Move.ofDoubleUpFinish(this.turn, faceDown, attack));
+                        }else{
+                            moves.push(Move.ofFinish(this.turn, faceDown, attack));
                         }
                     }
-                    moves.push(Move.ofFaceDown(this.turn, faceDown, attack));
                 }
             }
         }else{
@@ -49,12 +59,21 @@ export class ThinkingInfo{
                     if(block.equals(attack) && KomaArray.count(hand, attack) < 2){
                         continue;
                     }
-                    if(attack.isKing){
-                        if(KomaArray.count(hand, Koma.ou) < 2 && !this.kingUsed){
-                            continue;
+
+                    if(KomaArray.getLength(myfield) < 6){
+                        if(attack.isKing){
+                            if(KomaArray.count(hand, Koma.ou) < 2 && !this.kingUsed){
+                                continue;
+                            }
+                        }
+                        moves.push(Move.ofMatch(this.turn, block, attack));
+                    }else{
+                        if(block.equals(attack)){
+                            moves.push(Move.ofDoubleUpFinish(this.turn, block, attack));
+                        }else{
+                            moves.push(Move.ofFinish(this.turn, block, attack));
                         }
                     }
-                    moves.push(Move.ofMatch(this.turn, block, attack));
                 }
             }
             if(KomaArray.contains(hand, Koma.ou) && Koma.ou.canBlock(this.lastAttack.attack)){
@@ -62,15 +81,29 @@ export class ThinkingInfo{
                     if(attack.isKing && KomaArray.count(hand, Koma.ou) < 2){
                         continue;
                     }
-                    if(attack.isKing){
-                        moves.push(Move.ofMatch(this.turn, Koma.ou, Koma.gyoku));
-                        moves.push(Move.ofMatch(this.turn, Koma.gyoku, Koma.ou));
-                    }else{
-                        if(KomaArray.containsExact(hand, Koma.ou)){
-                            moves.push(Move.ofMatch(this.turn, Koma.ou, attack));
+                    if(KomaArray.getLength(myfield) < 6){
+                        if(attack.isKing){
+                            moves.push(Move.ofMatch(this.turn, Koma.ou, Koma.gyoku));
+                            moves.push(Move.ofMatch(this.turn, Koma.gyoku, Koma.ou));
+                        }else{
+                            if(KomaArray.containsExact(hand, Koma.ou)){
+                                moves.push(Move.ofMatch(this.turn, Koma.ou, attack));
+                            }
+                            else{
+                                moves.push(Move.ofMatch(this.turn, Koma.gyoku, attack));
+                            }
                         }
-                        else{
-                            moves.push(Move.ofMatch(this.turn, Koma.gyoku, attack));
+                    }else{
+                        if(attack.isKing){
+                            moves.push(Move.ofDoubleUpFinish(this.turn, Koma.ou, Koma.gyoku));
+                            moves.push(Move.ofDoubleUpFinish(this.turn, Koma.gyoku, Koma.ou));
+                        }else{
+                            if(KomaArray.containsExact(hand, Koma.ou)){
+                                moves.push(Move.ofFinish(this.turn, Koma.ou, attack));
+                            }
+                            else{
+                                moves.push(Move.ofFinish(this.turn, Koma.gyoku, attack));
+                            }
                         }
                     }
                 }
