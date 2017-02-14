@@ -11,8 +11,10 @@ export interface AI{
 export class EvaluatedMove{
     public score: number;
     public move: Move;
-    public constructor(move: Move, score: number){
+    public history: string;
+    public constructor(move: Move, score: number, history:string = null){
         this.move = move;
         this.score = score;
+        this.history = history;
     }
 }

@@ -221,6 +221,7 @@ export class BoardHistory{
                 this.kingUsed--;
             }
         }
+        this.finishState = null;
         this.turn = Util.getPreviousTurn(this.turn);
 
         return move;

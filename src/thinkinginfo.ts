@@ -29,8 +29,8 @@ export class ThinkingInfo{
             //The last attack passed all the others
             for(let faceDown of KomaArray.getUnique(hand)){
                 for(let attack of KomaArray.getUnique(hand)){
-                    if(faceDown.equals(attack)){
-                        if(KomaArray.count(hand, faceDown) < 2){
+                    if(faceDown.equalsExact(attack)){
+                        if(KomaArray.countExact(hand, faceDown) < 2){
                             continue;
                         }
                     }

@@ -5,14 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "type": "node2",
             "request": "launch",
             "name": "Run debug code",
-            "program": "${workspaceRoot}\\src\\debug.ts",
+            "program": "${workspaceRoot}/src/debug.ts",
             "cwd": "${workspaceRoot}",
-            "outFiles": [
-                "${workspaceRoot}\\lib\\**\\*.*"
-                ]
+            "outFiles": ["${workspaceRoot}/lib/**/*.js"]
         },
         {
             "type": "node",
@@ -21,13 +19,6 @@
             "program": "${workspaceRoot}\\lib\\index.js",
             "cwd": "${workspaceRoot}",
             "outFiles": ["${workspaceRoot}\\lib\\**\\*.*"]
-        },
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "プロセスに添付",
-            "port": 5858,
-            "outFiles": []
         },
         {
             "name": "Run mocha",
@@ -44,7 +35,7 @@
             ],
             "sourceMaps": true,
             "outFiles" : [
-                "${workspaceRoot}/test/out"
+                "${workspaceRoot}/test/out/**/*.js"
                 ]
 
 

@@ -121,6 +121,10 @@ export class KomaArray{
         return target.filter((k)=>koma.equals(k)).length;
     }
 
+    public static countExact(target:Array<Koma>, koma: Koma): number{
+        return target.filter((k)=>koma.equalsExact(k)).length;
+    }
+
     public static sortAsc(target:Array<Koma>):void{
         target.sort(KomaArray.comparerAsc);
     };

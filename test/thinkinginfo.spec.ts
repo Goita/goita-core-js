@@ -40,5 +40,29 @@ describe('ThinkingInfo',()=>{
             let moves = info.getPossibleMoves();
             expect(moves.length).to.equal(0);
         });
+
+        it("88 or 99 moves are not allowed", ()=>{
+            //"12667789,12345543,11112345,11112345,s1"
+            //attack:0, hand: 12667789 -> must not contain 188 nor 199 
+            const info = new ThinkingInfo(0, "12667789", ["00000000","00000000","00000000","00000000"], null);
+            const moves = new Array<string>();
+            for(const move of info.getPossibleMoves()){
+                moves.push(move.toOpenString());
+            }
+            expect(moves).to.not.contain("188");
+            expect(moves).to.not.contain("199");
+        });
+
+        it("king's double up finish", ()=>{
+            const h = "12667789,12345543,11112345,11112345,s1,116,2p,3p,4p,126,2p,3p,4p,177,2p,3p,4p";
+            const board = Board.createFromString(h);
+            const info = board.toThinkingInfo();
+            const moves = new Array<string>();
+            for(const move of info.getPossibleMoves()){
+                moves.push(move.toOpenString());
+            }
+            expect(moves).to.contain("189");
+            expect(moves).to.contain("198");
+        });
     });
 });
