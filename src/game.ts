@@ -47,4 +47,13 @@ export class Game{
         }
         this.board = Board.createFromString(history);
     }
+
+    public get isEnd(): boolean{
+        for(const s of this.scores){
+            if(s >= this.winScore){
+                return true;
+            }
+        }
+        return false;
+    }
 }

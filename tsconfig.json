@@ -8,7 +8,7 @@
         "noUnusedParameters": true,
         "noImplicitUseStrict": true,
         "importHelpers": true,
-        "newLine": "CRLF",
+        "newLine": "LF",
         "removeComments": true,
         "preserveConstEnums": true,
         "outDir": "lib",
