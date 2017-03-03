@@ -72,4 +72,15 @@ describe('Util',()=>{
             expect(Util.isSameTeam(0, 1)).to.be.false;
         });
     });
+
+    describe('#shiftTurn', () => {
+        it('shift + 2', () => {
+            expect(Util.shiftTurn(0, 2)).to.equal(2);
+            expect(Util.shiftTurn(3, 2)).to.equal(1);
+        });
+        it('shift - 2', () => {
+            expect(Util.shiftTurn(0, 2)).to.equal(2);
+            expect(Util.shiftTurn(3, 2)).to.equal(1);
+        });
+    });
 });

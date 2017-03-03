@@ -111,4 +111,23 @@ export class ThinkingInfo{
         }
         return moves;
     }
+
+    public getBlockKomaList(): Array<Koma>{
+        const moves = this.getPossibleMoves();
+        const blocks = KomaArray.getUnique(moves.filter((m) => !m.pass).map<Koma>((m) => m.block));
+        return blocks;
+    }
+
+    public getAttackKomaList(block: Koma): Array<Koma>{
+        const moves = this.getPossibleMoves();
+        const attacks = moves.filter((m) => !m.pass && m.block === block).map<Koma>((m) => m.attack);
+        if(attacks.length === 0){
+            throw "invalid block koma is given";
+        }
+        return attacks;
+    }
+
+    public get canPass():boolean{
+        return this.lastAttack && this.lastAttack.no !== this.turn;
+    }
 }

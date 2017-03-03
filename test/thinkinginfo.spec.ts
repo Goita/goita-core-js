@@ -1,5 +1,6 @@
-import {Move, Koma, Board, ThinkingInfo} from '../src';
+import {Move, Koma, Board} from '../src';
 import * as Chai from "chai";
+import { ThinkingInfo } from '../src/thinkinginfo';
 
 const expect = Chai.expect;
 
@@ -7,7 +8,7 @@ describe('ThinkingInfo',()=>{
     describe('#getPossibleMoves', ()=>{
         it("first turn", ()=>{
             //hand: 12345678 -> 1?(6), 2?(6), 3?(6), 4?(6), 5?(6), 6?(6), 7?(6), 8?(7) = 49 
-            let info = new ThinkingInfo(1, "12345678", ["00000000","00000000","00000000","00000000"], null);
+            const info = new ThinkingInfo(1, "12345678", ["00000000","00000000","00000000","00000000"], null);
             let moves = info.getPossibleMoves();
             //moves.forEach(m=>console.log(m.toOpenString()));
             expect(moves.some(m=>m.pass),"dealer cannot pass").to.equal(false);
@@ -16,8 +17,8 @@ describe('ThinkingInfo',()=>{
 
         it("match turn", ()=>{
             //attack:3, hand: 12345679 -> pass(1), 3?(6), 9?:(7) = 14 
-            let info = new ThinkingInfo(3, "12345679", ["x3000000","00000000","00000000","00000000"],
-                                        Move.ofFaceDown(0, Koma.shi, Koma.bakko));
+            const info = new ThinkingInfo(3, "12345679", ["x3000000","00000000","00000000","00000000"],
+                                        Move.ofFaceDown(0, Koma.hidden, Koma.bakko));
             let moves = info.getPossibleMoves();
             //moves.forEach(m=>console.log(m.toOpenString()));
             expect(moves.some(m=>m.pass), "can pass").to.equal(true);
@@ -35,9 +36,9 @@ describe('ThinkingInfo',()=>{
         });
         it("end of playing", ()=>{
             //attack:3, hand: 12345679 -> pass(1), 3?(6), 9?:(7) = 14 
-            let info = new ThinkingInfo(0, "00000000", ["x6x6x7x4","00000000","00000000","00000000"],
-                                        Move.ofFinish(0, Koma.kin, Koma.gin));
-            let moves = info.getPossibleMoves();
+            const info = new ThinkingInfo(0, "00000000", ["x6x6x7x4","00000000","00000000","00000000"],
+                                        Move.ofFinish(0, Koma.hidden, Koma.gin));
+            const moves = info.getPossibleMoves();
             expect(moves.length).to.equal(0);
         });
 
@@ -63,6 +64,53 @@ describe('ThinkingInfo',()=>{
             }
             expect(moves).to.contain("189");
             expect(moves).to.contain("198");
+        });
+    });
+
+    describe('#getBlockKomaList', () => {
+        it('get block-list except pass', () => {
+            //attack:3, hand: 12345679 -> pass(1), 3?(6), 9?:(7) = 14 
+            const info = new ThinkingInfo(3, "12345679", ["x3000000","00000000","00000000","00000000"],
+                                        Move.ofFaceDown(0, Koma.hidden, Koma.bakko));
+            const blocks = info.getBlockKomaList();
+            expect(blocks).to.contain(Koma.bakko);
+            expect(blocks).to.contain(Koma.gyoku);
+            expect(blocks.length).to.equal(2);
+        });
+        it('get an empty block-list, only pass is available', () => {
+            const info = new ThinkingInfo(1, "12245677", ["x3000000","00000000","00000000","00000000"],
+                                        Move.ofFaceDown(0, Koma.hidden, Koma.bakko));
+            const blocks = info.getBlockKomaList();
+            expect(blocks.length).to.equal(0);
+        });
+    });
+
+    describe('#getAttackKomaList', () => {
+        it('get attack-list', () => {
+            //attack:3, hand: 12345679 -> block:3 , attack: 1, 2, 4, 5, 6, 7
+            const info = new ThinkingInfo(3, "12345679", ["x3000000","00000000","00000000","00000000"],
+                                        Move.ofFaceDown(0, Koma.hidden, Koma.bakko));
+            const attacks = info.getAttackKomaList(Koma.bakko);
+            expect(attacks.length).to.equal(6);
+        });
+        it('throw error, invalid block koma is given', () => {
+            const info = new ThinkingInfo(1, "12345679", ["x3000000","00000000","00000000","00000000"],
+                                        Move.ofFaceDown(0, Koma.hidden, Koma.bakko));
+            expect(ThinkingInfo.prototype.getAttackKomaList.bind(info, Koma.shi)).throws();
+        });
+    });
+
+    describe('#canPass', () => {
+        it('returns true', () => {
+            const info = new ThinkingInfo(1, "12345679", ["x3000000","00000000","00000000","00000000"],
+                                        Move.ofFaceDown(0, Koma.hidden, Koma.bakko));
+            expect(info.canPass).to.be.true;
+        });
+
+        it('returns false', () => {
+            const info = new ThinkingInfo(1, "12345679", ["x3000000","00000000","00000000","00000000"],
+                                        Move.ofFaceDown(1, Koma.hidden, Koma.bakko));
+            expect(info.canPass).to.be.false;
         });
     });
 });

@@ -220,7 +220,8 @@ describe('Board',()=>{
             expect(info.fields[1]).to.equal(KomaArray.toString(testBoard.players[1].field));
             expect(info.fields[2]).to.equal(KomaArray.toString(testBoard.players[2].field));
             expect(info.fields[3]).to.equal(KomaArray.toString(testBoard.players[3].field));
-            expect(info.lastAttack.toOpenString()).to.equal(testBoard.history.lastMove.toOpenString());
+            expect(info.lastAttack.toString()).to.equal(testBoard.history.lastMove.toString());
+            expect(info.lastAttack.block).to.equal(Koma.hidden);
             expect(info.turn).to.equal(turn);
             expect(info.kingUsed).to.equal(testBoard.history.kingUsed > 0);
         });
@@ -233,14 +234,26 @@ describe('Board',()=>{
         });
     });
 
-    describe('#is5ShiSuspended', ()=>{
+    describe('#isGoshiSuspended', ()=>{
         it("goshi", ()=>{
             let board = Board.createFromString("11111678,12345679,11112345,23452345,s1");
-            expect(board.is5ShiSuspended).to.equal(true);
+            expect(board.isGoshiSuspended).to.equal(true);
         });
         it("not goshi", ()=>{
             let board = Board.createFromString("11112678,12345679,11112345,13452345,s1");
-            expect(board.is5ShiSuspended).to.equal(false);
+            expect(board.isGoshiSuspended).to.equal(false);
+        });
+    });
+
+    describe('#goshiPlayerNo', () => {
+        it('return -1 when not goshi', () => {
+            const board = Board.createFromString("11112678,12345679,11112345,13452345,s1");
+            expect(board.goshiPlayerNo).to.lessThan(0);
+        });
+
+        it('goshi player no', () => {
+            const board = Board.createFromString("12345679,11111678,11112345,23452345,s1");
+            expect(board.goshiPlayerNo).to.equal(1);
         });
     });
 
@@ -261,7 +274,7 @@ describe('Board',()=>{
     describe('#isEndOfDeal', ()=>{
         it("goshi continue", ()=>{
             let board = Board.createFromString("11111678,12345679,11112345,23452345,s1");
-            board.continue5Shi();
+            board.continueGoshi();
             expect(board.isEndOfDeal).to.equal(false);
         });
         it("goshi redeal", ()=>{

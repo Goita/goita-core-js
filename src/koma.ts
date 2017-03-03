@@ -8,17 +8,17 @@ export class Koma{
     }
 
     //they are all static value, so these object are going to match to the same koma
-    public static empty: Koma = new Koma(Define.empty);
-    public static hidden: Koma = new Koma(Define.hidden);
-    public static shi: Koma = new Koma(Define.shi);
-    public static gon: Koma = new Koma(Define.gon);
-    public static bakko: Koma = new Koma(Define.bakko);
-    public static gin: Koma = new Koma(Define.gin);
-    public static kin: Koma = new Koma(Define.kin);
-    public static kaku: Koma = new Koma(Define.kaku);
-    public static hisha: Koma = new Koma(Define.hisha);
-    public static ou: Koma = new Koma(Define.ou);
-    public static gyoku: Koma = new Koma(Define.gyoku);
+    public static empty = new Koma(Define.empty);
+    public static hidden = new Koma(Define.hidden);
+    public static shi = new Koma(Define.shi);
+    public static gon = new Koma(Define.gon);
+    public static bakko= new Koma(Define.bakko);
+    public static gin = new Koma(Define.gin);
+    public static kin = new Koma(Define.kin);
+    public static kaku = new Koma(Define.kaku);
+    public static hisha = new Koma(Define.hisha);
+    public static ou = new Koma(Define.ou);
+    public static gyoku = new Koma(Define.gyoku);
 
     public static fromStr(val: string){
         if(val === Define.empty) {return Koma.empty;}
@@ -43,8 +43,9 @@ export class Koma{
     public get Text(): string{
         let text = '';
         switch(this.value){
-            case Define.empty: text = "";break;
-            case Define.hidden: text = "■"; break;
+            case Define.empty: text = ""; break;
+            // candidates ☖☐☗◼◯
+            case Define.hidden: text = "[]"; break;
             case Define.shi: text = "し"; break;
             case Define.gon: text = "香"; break;
             case Define.bakko: text = "馬"; break;
@@ -178,6 +179,10 @@ export class KomaArray{
 
     public static toString(target:Array<Koma>): string{
         return target.join('');
+    }
+
+    public static toTextString(target:Array<Koma>): string{
+        return target.map(k=>k.Text).join('');
     }
 
     public static getLength(target:Array<Koma>): number{

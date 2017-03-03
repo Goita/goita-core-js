@@ -38,6 +38,7 @@ export class Game{
             dealer = Util.rand.integer(0,3);
         }
         this.board = Board.createRandomly(dealer);
+        this.setupNewDeal();
     }
 
     /** set up a new board with history string */
@@ -46,6 +47,24 @@ export class Game{
             this.history.push(this.board);
         }
         this.board = Board.createFromString(history);
+        this.setupNewDeal();
+    }
+
+    private setupNewDeal(): void{
+        this.roundCount = 1;
+
+        this.scores = [0, 0];
+        for(const h of this.history){
+            if(h.isEndOfDeal){
+                const f = h.getFinishState();
+                if(f.redeal || f.aborted){
+                    continue;
+                }
+                const m = h.history.lastMove;
+                this.scores[m.no % 2] += m.toScore();
+                this.roundCount++;
+            }
+        }
     }
 
     public get isEnd(): boolean{

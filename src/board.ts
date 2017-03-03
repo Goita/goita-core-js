@@ -10,7 +10,7 @@ export class Board {
     public players: Array<Player>;
     public history: BoardHistory;
     private redoStack: Array<Move>;
-    private suspended5Shi: boolean;
+    private suspendedGoshi: boolean;
     private _shiCount: Array<number>;
 
     private constructor() {
@@ -30,8 +30,12 @@ export class Board {
         return this._shiCount;
     }
 
-    public get is5ShiSuspended():boolean{
-        return this.suspended5Shi;
+    public get isGoshiSuspended():boolean{
+        return this.suspendedGoshi;
+    }
+
+    public get goshiPlayerNo(): number{
+        return this._shiCount.map((c) => c >= 5).indexOf(true);
     }
 
     public get turnPlayer(): Player{
@@ -48,7 +52,7 @@ export class Board {
             this.players[i] = player;
             this._shiCount[i] = player.countKoma(Koma.shi);
         }
-        this.suspended5Shi = this._shiCount.filter((c)=>c === 5).length === 1;
+        this.suspendedGoshi = this._shiCount.filter((c)=>c === 5).length === 1;
         let goshiIndex = -1;
         for(let i=0; i < Define.maxPlayers;i++){
             let count = this._shiCount[i];
@@ -104,13 +108,13 @@ export class Board {
 
     }
 
-    public continue5Shi():void{
-        this.suspended5Shi = false;
+    public continueGoshi():void{
+        this.suspendedGoshi = false;
     }
 
     /** finalize this board as redeal */
     public redeal():void{
-        if(this.suspended5Shi){
+        if(this.suspendedGoshi){
             this.history.finishState = FinishState.ofRedeal(this.history.dealer);
         }
     }
@@ -229,7 +233,7 @@ export class Board {
         let board = new Board();
         board.init(history.dealer, history.hands);
         for(let i=0;i<history.moveStack.length;i++){
-            board.continue5Shi();
+            board.continueGoshi();
             board.playMove(history.moveStack[i]);
         }
 
@@ -246,6 +250,11 @@ export class Board {
         let fields = new Array<string>();
         for(let p of this.players){
             fields.push(KomaArray.toString(p.field));
+        }
+        let lastAttack = this.history.lastAttackMove;
+        // hide face down koma
+        if( lastAttack && lastAttack.faceDown){
+            lastAttack.block = Koma.hidden;
         }
         return new ThinkingInfo(turn, KomaArray.toString(this.turnPlayer.hand), fields, this.history.lastAttackMove);
     }

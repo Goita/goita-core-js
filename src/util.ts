@@ -34,13 +34,22 @@ export module Util{
     }
 
     /** 0->1, 1->2, 2->3, 3->0 */
-    export function getNextTurn(turn:number):number{
-        return (turn + 1) % 4;
+    export function getNextTurn(turn: number):number{
+        return Util.shiftTurn(turn , 1);
     }
 
     /** 0->3, 1->0, 2->1, 3->2 */
-    export function getPreviousTurn(turn:number):number{
-        return (turn + 3) % 4;
+    export function getPreviousTurn(turn: number):number{
+        return Util.shiftTurn(turn, -1);
+    }
+
+    export function shiftTurn(turn: number, offset: number): number {
+        if(offset < 0){
+            return (turn + (4 + offset % 4)) % 4;
+        }
+        else{
+            return (turn + (offset % 4)) % 4;
+        }
     }
 
     export function isSameTeam(no1: number, no2:number) :boolean{
