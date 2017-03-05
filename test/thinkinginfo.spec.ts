@@ -1,6 +1,5 @@
-import { Move, Koma, Board } from '../src';
+import { Move, Koma, Board, ThinkingInfo } from '../src';
 import * as Chai from "chai";
-import { ThinkingInfo } from '../src/thinkinginfo';
 
 const expect = Chai.expect;
 
@@ -109,7 +108,7 @@ describe('ThinkingInfo', () => {
 
         it('returns false', () => {
             const info = new ThinkingInfo(0, 0, "12345679", ["x3000000", "00000000", "00000000", "00000000"], "00000000",
-                Move.ofFaceDown(0, Koma.hidden, Koma.bakko), [0, 0, 0, 0], "1x3,2p,3p,4p");
+                Move.ofFaceDown(0, Koma.shi, Koma.bakko), [0, 0, 0, 0], "113,2p,3p,4p");
             expect(info.canPass).to.be.false;
         });
     });

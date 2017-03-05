@@ -284,6 +284,9 @@ export class BoardHistory {
         let attacker: number = Number(moveHistory[0].charAt(0)) - 1;
 
         for (let m of moveHistory) {
+            if(!m || m.length === 0) {
+                continue;
+            }
             let move = Move.fromStr(m, attacker);
             moves.push(move);
             if (!move.pass) {
@@ -309,13 +312,21 @@ export class BoardHistory {
     public toHiddenString(): string {
         let str = new Array<string>();
         for (let i = 0; i < Define.maxPlayers; i++) {
-            const hand = KomaArray.createFrom(this.hands[i]).sort();
-            str.push(KomaArray.toString(hand));
+            if(i === this.turn){
+                const hand = KomaArray.createFrom(this.hands[i]).sort();
+                str.push(KomaArray.toString(hand));
+            } else{
+                str.push("xxxxxxxx");
+            }
         }
         str.push(Define.dealerChar + (this.dealer + 1));
-        for (let move of this.moveStack) {
-            // put hidden info
-            str.push(move.toString());
+        for (const move of this.moveStack) {
+            if(move.no === this.turn) {
+                str.push(move.toOpenString());
+            }else{
+                // put hidden info
+                str.push(move.toString());
+            }
         }
         return str.join(Define.historyStringDelimiter);
     }

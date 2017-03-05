@@ -50,7 +50,7 @@ describe('KomaArray', () => {
             expect(KomaArray.toString(list)).to.equals("00000000");
         });
     });
-    describe('#createHandFrom', () => {
+    describe('#createFrom', () => {
         it("hand array from string", () => {
             list = KomaArray.createFrom("11223344");
             expect(KomaArray.toString(list)).to.equals("11223344");

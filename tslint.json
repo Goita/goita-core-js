@@ -10,6 +10,6 @@
 		"no-trailing-whitespace": true,
 		"no-unused-new": true,
 		"indent": [true, "spaces"],
-		"linebreak-style": [false, "LF"]
+		"linebreak-style": [true, "LF"]
 	}
 }

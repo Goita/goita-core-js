@@ -6,7 +6,7 @@ import { EvaluatedMove } from './ai.interface';
 /** Goita board solver class */
 export class Solver {
     //public win_lose_search: boolean;
-    public board: Board;
+    private board: Board;
     private playerNo: number;
     public searchedLeaf: number;
     public searchedMoves: number;

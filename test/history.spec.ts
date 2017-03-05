@@ -98,6 +98,11 @@ describe('BoardHistory', () => {
         sampleHistory.push(Move.ofMatch(2, Koma.shi, Koma.kin));
     });
     describe('#parseMoveHistory', () => {
+        it("parse empty", () => {
+            let array = "".split(",");
+            let moves = BoardHistory.parseMoveHistory(array);
+            expect(moves.length).to.equal(0);
+        });
         it("parse moves", () => {
             let array = "113,2p,3p,431,1p,2p,315".split(",");
             let moves = BoardHistory.parseMoveHistory(array);
@@ -115,6 +120,12 @@ describe('BoardHistory', () => {
         });
         it("history does not contain 'x' (hidden)", () => {
             expect(sampleHistory.toString()).to.not.contain("x");
+        });
+    });
+
+    describe('#toHiddenString', () => {
+        it("describes hidden history in string format", () => {
+            expect(sampleHistory.toHiddenString()).to.equal("xxxxxxxx,xxxxxxxx,xxxxxxxx,11112345,s1,1x3,2p,3p,431,1p,2p,315");
         });
     });
 

@@ -255,8 +255,8 @@ export class Board {
         let lastAttack: Move = null;
         if (this.history.lastAttackMove) {
             lastAttack = this.history.lastAttackMove.clone();
-            // hide face down koma
-            if (lastAttack.faceDown) {
+            // hide face down koma if it's from another player
+            if (turn !== lastAttack.no && lastAttack.faceDown) {
                 lastAttack.block = Koma.hidden;
             }
         }
