@@ -1,25 +1,25 @@
-import {Util} from './util';
-import {Move} from './history';
-import {Board} from './board';
-import {EvaluatedMove} from './ai.interface';
+import { Util } from './util';
+import { Move } from './history';
+import { Board } from './board';
+import { EvaluatedMove } from './ai.interface';
 
 /** Goita board solver class */
-export class Solver{
+export class Solver {
     //public win_lose_search: boolean;
     public board: Board;
     private playerNo: number;
-    public searchedLeaf:number;
-    public searchedMoves:number;
+    public searchedLeaf: number;
+    public searchedMoves: number;
 
-    public constructor(){
+    public constructor() {
         this.init();
     }
 
-    private init(){
+    private init() {
         //this.win_lose_search = false;
     }
 
-    public solve(historyString: string): EvaluatedMove[]{
+    public solve(historyString: string): EvaluatedMove[] {
         this.searchedLeaf = 0;
         this.searchedMoves = 0;
 
@@ -28,7 +28,7 @@ export class Solver{
         let evaledMoves = new Array<EvaluatedMove>();
         let info = this.board.toThinkingInfo();
         let moves = info.getPossibleMoves();
-        for(let move of moves){
+        for (let move of moves) {
             let v = this.alpha_beta_search(move, new EvalScore(-999), new EvalScore(999));
             evaledMoves.push(new EvaluatedMove(move, v.score, v.history));
             this.searchedMoves++;
@@ -37,12 +37,12 @@ export class Solver{
         return evaledMoves;
     }
 
-    private eval(): number{
-        if(!this.board.isEndOfDeal){
+    private eval(): number {
+        if (!this.board.isEndOfDeal) {
             throw "cannot eval";
         }
         this.searchedLeaf++;
-        if(this.searchedLeaf % 10000 === 0){
+        if (this.searchedLeaf % 10000 === 0) {
             console.log("searched leaf: " + this.searchedLeaf);
         }
         return this.board.history.lastMove.toScore();
@@ -52,11 +52,11 @@ export class Solver{
      * @min prune search if score is under min value
      * @max prune search if score is upper max value
      */
-    private alpha_beta_search(move: Move, min: EvalScore, max: EvalScore): EvalScore{
+    private alpha_beta_search(move: Move, min: EvalScore, max: EvalScore): EvalScore {
         this.board.playMove(move);
-        if(this.board.isEndOfDeal){
+        if (this.board.isEndOfDeal) {
             let score = this.eval();
-            if(!Util.isSameTeam(this.playerNo, move.no)){
+            if (!Util.isSameTeam(this.playerNo, move.no)) {
                 score *= -1;
             }
             let history = this.board.toHistoryString();
@@ -65,26 +65,26 @@ export class Solver{
         }
         let moves = this.board.toThinkingInfo().getPossibleMoves();
         let v: EvalScore;
-        if(Util.isSameTeam(this.playerNo, this.board.turnPlayer.no)){
+        if (Util.isSameTeam(this.playerNo, this.board.turnPlayer.no)) {
             v = min;
-            for(let move of moves){
+            for (let move of moves) {
                 let t = this.alpha_beta_search(move, v, max);
-                if (t.score > v.score){
+                if (t.score > v.score) {
                     v = t;
                 }
-                if(v.score > max.score){
+                if (v.score > max.score) {
                     this.board.undo();
                     return max;
                 }
             }
-        }else{
+        } else {
             v = max;
-            for(let move of moves){
+            for (let move of moves) {
                 let t = this.alpha_beta_search(move, min, v);
-                if (t.score < v.score){
+                if (t.score < v.score) {
                     v = t;
                 }
-                if(v.score < min.score){
+                if (v.score < min.score) {
                     this.board.undo();
                     return min;
                 }
@@ -95,10 +95,10 @@ export class Solver{
     }
 }
 
-class EvalScore{
-    public score:number;
-    public history:string;
-    public constructor(score:number, history:string = null){
+class EvalScore {
+    public score: number;
+    public history: string;
+    public constructor(score: number, history: string = null) {
         this.score = score;
         this.history = history;
     }

@@ -1,26 +1,26 @@
-import {Koma, KomaArray} from './koma';
-import {Define} from './define';
+import { Koma, KomaArray } from './koma';
+import { Define } from './define';
 
-export class Player{
+export class Player {
     /** player No. */
-    public no :number;
+    public no: number;
     /** player's koma in hand */
     public hand: Array<Koma>;
     /** visible field */
-    public field :Array<Koma>;
+    public field: Array<Koma>;
     /** hidden field */
-    private hiddenfield :Array<Koma>;
+    public hiddenfield: Array<Koma>;
 
     /** number of koma left in hand */
-    public handCounter:number;
+    public handCounter: number;
     /** number of koma put on field */
-    public fieldCounter:number;
+    public fieldCounter: number;
 
-    public constructor(no: number, hand: string){
+    public constructor(no: number, hand: string) {
         this.init(no, hand);
     }
 
-    private init(no: number, hand: string){
+    private init(no: number, hand: string) {
         this.no = no;
         this.hand = KomaArray.createFrom(hand);
         this.field = KomaArray.createEmptyField();
@@ -29,9 +29,9 @@ export class Player{
         this.fieldCounter = 0;
     }
 
-    public putKoma(koma: Koma, faceDown:boolean = false):void{
+    public putKoma(koma: Koma, faceDown: boolean = false): void {
         let i = this.hand.indexOf(koma);
-        if(i<0){
+        if (i < 0) {
             console.log("player#" + this.no + " does not have " + koma + " in hand");
             //console.log("the hand: ");
             //console.log(this.hand);
@@ -40,17 +40,17 @@ export class Player{
         this.hand[i] = Koma.empty;
         KomaArray.sortDesc(this.hand);
         this.handCounter--;
-        if(faceDown){
+        if (faceDown) {
             this.field[this.fieldCounter] = Koma.hidden;
-        }else{
+        } else {
             this.field[this.fieldCounter] = koma;
         }
         this.hiddenfield[this.fieldCounter] = koma;
         this.fieldCounter++;
     }
 
-    public pickLastKoma():void{
-        if(this.fieldCounter === 0){
+    public pickLastKoma(): void {
+        if (this.fieldCounter === 0) {
             return;
         }
         let pickedKoma = this.hiddenfield[this.fieldCounter - 1];
@@ -63,21 +63,21 @@ export class Player{
     }
 
     /** return true, if there is a given koma in tegoma */
-    public hasKoma(koma: Koma):boolean{
+    public hasKoma(koma: Koma): boolean {
         return KomaArray.contains(this.hand, koma);
     }
 
     /** return true, if there is a given koma in tegoma */
-    public hasKomaExact(koma: Koma):boolean{
+    public hasKomaExact(koma: Koma): boolean {
         return KomaArray.containsExact(this.hand, koma);
     }
 
     /** count a given koma in tegoma  */
-    public countKoma(koma: Koma): number{
+    public countKoma(koma: Koma): number {
         return KomaArray.count(this.hand, koma);
     }
 
-    public getUniqueHand(): Array<Koma>{
+    public getUniqueHand(): Array<Koma> {
         return KomaArray.getUnique(this.hand);
     }
 
@@ -86,14 +86,14 @@ export class Player{
      *
      * @returns {Array<Koma>} hidden koma: koma value / visible koma or empty: null
      */
-    public getHiddenKoma(): Array<Koma>{
+    public getHiddenKoma(): Array<Koma> {
         let diff = KomaArray.createEmptyField();
-        if(this.field === null || this.hiddenfield === null
-            || this.field.length !== this.hiddenfield.length){
+        if (this.field === null || this.hiddenfield === null
+            || this.field.length !== this.hiddenfield.length) {
             return diff;
         }
-        for(let i=0;i<Define.maxFieldLength;i++){
-            if(this.field[i].equals(Koma.hidden)){
+        for (let i = 0; i < Define.maxFieldLength; i++) {
+            if (this.field[i].equals(Koma.hidden)) {
                 diff[i] = this.hiddenfield[i];
             }
         }

@@ -5,20 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node2",
+            "type": "node",
             "request": "launch",
             "name": "Run debug code",
             "program": "${workspaceRoot}/src/debug.ts",
             "cwd": "${workspaceRoot}",
             "outFiles": ["${workspaceRoot}/lib/**/*.js"]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "プログラムの起動",
-            "program": "${workspaceRoot}\\lib\\index.js",
-            "cwd": "${workspaceRoot}",
-            "outFiles": ["${workspaceRoot}\\lib\\**\\*.*"]
         },
         {
             "name": "Run mocha",

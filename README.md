@@ -6,7 +6,7 @@ It provides basic Goita game method, can be referenced by node.js application an
 
 ## Goita rules
 
-Rules([Japanese](http://goita.jp/?p=102))|([English](https://www.pagat.com/climbing/goita.html))
+Rules([Japanese](http://goita.jp/rule/))|([English](https://www.pagat.com/climbing/goita.html))
 
 ## Usage
 
@@ -15,33 +15,51 @@ To start the 150 point match game, create game object.
 __Node.js__
 
 ```javascript
-import {GoitaCore, Koma} from "goita-core-js";
+import * goita from "goita-core";
 
-let game = GoitaCore.createGame();
+const game = goita.Factory.createGame();
 game.startNewGame();
+
+LABEL:ROUND START
 
 //deal the all koma randomly
 game.startNewDeal();
-console.log("dealer is player" + game.board.currentPlayer.no);
+console.log("dealer is player" + game.board.turnPlayer.no);
 
-//5shi check
-if(game.board.is5Shi){
-    //redeal
-    game.startNewDeal();
+// goshi check
+if(game.board.isGoshiSuspended){
+    // question redeal or play to goshi player
+    const goshiP: number[] = game.board.goshiPlayerNo;
+    // ask goshi player's to continue...
+
+    // redeal
+    game.board.redeal();
+    goto: ROUND START
 
     //or play
+    game.board.continueGoshi();
 }
+
+LABEL: PLAYERS PLAY
+
 game.board.play(Koma.shi, Koma.kin);
 //...and so on
 
 //is the board finished to deal?
 if(game.board.isEndOfDeal){
 
-    if(!game.isEndOfGame){
+    if(!game.isEnd){
         //Next deal until any player wins
         game.startNewDeal();
+        goto: ROUND START
+    } else {
+        goto: END
     }
 }
+
+goto: PLAYERS PLAY
+
+LABEL : END
 ```
 
 ## History string
@@ -59,7 +77,7 @@ It aims for human readable and writable, giving up the effect of minimum data si
 
 
 ```javascript
-//x:不明 0:空 1:し 2:香 3:馬 4:銀 5:金 6:角 7:飛 8:王 9:玉 p:無し
+//x:不明 0:空 1:し 2:香 3:馬 4:銀 5:金 6:角 7:飛 8:王 9:玉 p:なし
 let p1 = "12345678";
 let p2 = "12345679";
 let p3 = "11112345";
