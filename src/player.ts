@@ -32,10 +32,7 @@ export class Player {
     public putKoma(koma: Koma, faceDown: boolean = false): void {
         let i = this.hand.indexOf(koma);
         if (i < 0) {
-            console.log("player#" + this.no + " does not have " + koma + " in hand");
-            //console.log("the hand: ");
-            //console.log(this.hand);
-            throw "Does not have the koma";
+            throw new Error("player#" + this.no + " does not have " + koma + " in hand");
         }
         this.hand[i] = Koma.empty;
         KomaArray.sortDesc(this.hand);

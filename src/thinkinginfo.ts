@@ -1,48 +1,32 @@
 import { Koma, KomaArray } from './koma';
 import { Move } from './history';
+import { YakuInfo } from "./yaku";
+import { Yaku } from "./define";
 
 /** the board infomation whitch player think with*/
 export class ThinkingInfo {
-    /**
-     * my hand
-     */
+    /** my hand */
     public hand: string;
-    /**
-     * the fields which every player see
-     */
+    /** the fields which every player see */
     public fields: string[];
-    /**
-     * all opened koma on my field
-     */
+    /** all opened koma on my field */
     public hiddenField: string;
-    /**
-     * the last attack information
-     */
+    /** the last attack information */
     public lastAttack: Move;
-    /**
-     * turn No.
-     */
+    /** turn No. */
     public turn: number;
 
-    /**
-     * dealer No.
-     */
+    /** dealer No. */
     public dealer: number;
-    /**
-     * true if Ou or Gyoku is used
-     */
+    /** true if Ou or Gyoku is used */
     public kingUsed: boolean;
-    /**
-     * goshi information
-     */
-    public shiCount: number[];
+    /** goshi information */
+    public yakuInfo: YakuInfo[];
 
-    /**
-     * moves history
-     */
+    /** moves history */
     public history: string;
 
-    public constructor(turn: number, dealer:number, hand: string, fields: string[], hidden: string, lastAttack: Move, shiCount: number[], history: string) {
+    public constructor(turn: number, dealer:number, hand: string, fields: string[], hidden: string, lastAttack: Move, yakuInfo: YakuInfo[], history: string) {
         this.turn = turn;
         this.dealer = dealer;
         this.hand = hand;
@@ -50,12 +34,17 @@ export class ThinkingInfo {
         this.hiddenField = hidden;
         this.lastAttack = lastAttack;
         this.kingUsed = fields.some(f => KomaArray.contains(KomaArray.createFrom(f), Koma.ou));
-        this.shiCount = shiCount;
+        this.yakuInfo = yakuInfo;
         this.history = history;
     }
 
     public getPossibleMoves(): Array<Move> {
         let moves = new Array<Move>();
+
+        // no possible moves with finishing yaku
+        if(this.yakuInfo.some((i)=>i.yaku === Yaku.rokushi || i.yaku === Yaku.nanashi || i.yaku === Yaku.hachishi || i.yaku === Yaku.goshigoshi_win)) {
+            return moves;
+        }
         if (this.lastAttack && this.lastAttack.finish) {
             return moves;
         }
@@ -159,7 +148,7 @@ export class ThinkingInfo {
         const moves = this.getPossibleMoves();
         const attacks = moves.filter((m) => !m.pass && m.block === block).map<Koma>((m) => m.attack);
         if (attacks.length === 0) {
-            throw "invalid block koma is given";
+            throw new Error("invalid block koma " + block.toString() + " is given");
         }
         return attacks;
     }

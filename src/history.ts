@@ -263,7 +263,7 @@ export class BoardHistory {
 
         let dealer = Number(historyArray[Define.maxPlayers].substring(1, 2)) - 1;
         if (dealer < 0 || Define.maxPlayers <= dealer) {
-            throw "Dealer No. out of range: the given value was " + dealer;
+            throw new Error("Dealer No. is out-of-range: the given value was " + dealer);
         }
         let moves = BoardHistory.parseMoveHistory(historyArray.slice(Define.maxPlayers + 1));
 

@@ -8,9 +8,9 @@ describe("Koma", () => {
         it("throw exception to get hidden koma's score", () => {
             try {
                 const s = Koma.hidden.Score;
-                throw "Koma.hidden.Score should throw an error, but got " + s;
+                throw new Error("Koma.hidden.Score should throw an error, but got " + s);
             } catch (ex) {
-                expect(ex).to.equal("cannot get the score of Koma.hidden");
+                expect((<Error>ex).message).to.equal("cannot get the score of Koma.hidden");
             }
         });
     });

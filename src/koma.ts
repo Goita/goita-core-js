@@ -32,12 +32,12 @@ export class Koma {
         if (val === Define.hisha) { return Koma.hisha; }
         if (val === Define.ou) { return Koma.ou; }
         if (val === Define.gyoku) { return Koma.gyoku; }
-        throw "Invalid koma value " + val + " was given";
+        throw new Error("Invalid koma value " + val + " was given");
     }
 
     public get Score(): number {
         if (this === Koma.hidden) {
-            throw "cannot get the score of Koma.hidden";
+            throw new Error("cannot get the score of Koma.hidden");
         }
         let n = Number(this.value);
         return Math.floor(n / 2) * 10 + 10;
@@ -66,6 +66,18 @@ export class Koma {
 
     public get isKing(): boolean {
         return this.value === Define.ou || this.value === Define.gyoku;
+    }
+
+    public get isShi(): boolean {
+        return this.value === Define.shi;
+    }
+
+    public get isHidden(): boolean {
+        return this.value === Define.hidden;
+    }
+
+    public get isEmpty(): boolean {
+        return this.value === Define.empty;
     }
 
     /** return if this koma equals to the given koma. exception: "The OU equals the GYOKU" */
@@ -170,7 +182,7 @@ export class KomaArray {
     public static createEmptyField(): Array<Koma> {
         let str = "";
         for (let i = 0; i < Define.maxFieldLength; i++) {
-            str += Koma.empty.toString();
+            str += Koma.empty.value;
         }
         return KomaArray.createFrom(str);
     }

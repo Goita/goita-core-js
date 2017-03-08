@@ -32,18 +32,18 @@ export class Solver {
             let v = this.alpha_beta_search(move, new EvalScore(-999), new EvalScore(999));
             evaledMoves.push(new EvaluatedMove(move, v.score, v.history));
             this.searchedMoves++;
-            console.log("search done: " + move.toOpenString());
+            // console.log("search done: " + move.toOpenString());
         }
         return evaledMoves;
     }
 
     private eval(): number {
         if (!this.board.isEndOfDeal) {
-            throw "cannot eval";
+            throw new Error("cannot eval because the board is end of deal");
         }
         this.searchedLeaf++;
         if (this.searchedLeaf % 10000 === 0) {
-            console.log("searched leaf: " + this.searchedLeaf);
+            // console.log("searched leaf: " + this.searchedLeaf);
         }
         return this.board.history.lastMove.toScore();
     }

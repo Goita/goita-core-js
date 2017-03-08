@@ -1,5 +1,6 @@
 import { Board, Koma, KomaArray } from '../src';
 import * as Chai from "chai";
+import { Yaku } from '../src/define';
 
 const expect = Chai.expect;
 
@@ -213,7 +214,7 @@ describe('Board', () => {
             expect(info.dealer).to.equal(testBoard.history.dealer);
             expect(info.hiddenField).to.equal(KomaArray.toString(testBoard.players[0].hiddenfield));
             expect(info.history).to.equal("");
-            expect(info.shiCount).to.deep.equal([0,0,0,0]);
+            expect(info.yakuInfo.length).to.equal(0);
         });
         it("second turn", () => {
             testBoard.play(Koma.shi, Koma.bakko);
@@ -277,22 +278,27 @@ describe('Board', () => {
         });
     });
 
-    describe('#shiCount', () => {
+    describe('#yakuInfo', () => {
         it("not goshi", () => {
             let board = Board.createFromString("11112678,12345679,11132345,11452345,s1");
-            expect(board.shiCount[0]).to.equal(4);
-            expect(board.shiCount[1]).to.equal(1);
-            expect(board.shiCount[2]).to.equal(3);
-            expect(board.shiCount[3]).to.equal(2);
+            expect(board.yakuInfo.length).to.equal(0);
         });
         it("goshi", () => {
             let board = Board.createFromString("11111678,12345679,11112345,23452345,s1");
-            expect(board.shiCount[0]).to.equal(5);
+            expect(board.yakuInfo.length).to.equal(1);
+            const info = board.yakuInfo[0];
+            expect(info.playerNo).to.equal(0);
+            expect(info.yaku).to.equal(Yaku.goshi);
         });
         it("goshigoshi oppisite", () => {
             let board = Board.createFromString("11111678,11111345,22345679,23452345,s1");
-            expect(board.shiCount[0]).to.equal(5);
-            expect(board.shiCount[1]).to.equal(5);
+            expect(board.yakuInfo.length).to.equal(2);
+            const info1 = board.yakuInfo[0];
+            const info2 = board.yakuInfo[1];
+            expect(info1.playerNo).to.equal(0);
+            expect(info1.yaku).to.equal(Yaku.goshigoshi_opposite);
+            expect(info2.playerNo).to.equal(1);
+            expect(info2.yaku).to.equal(Yaku.goshigoshi_opposite);
         });
     });
 

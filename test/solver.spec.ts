@@ -20,5 +20,10 @@ describe('Solver', () => {
             let results = solver.solve("22221678,11113345,11145679,11345345,s1,112,2p,3p,4p,162,2p,3p,4p,172,2p,3p,4p,128");
             expect(results).is.empty;
         });
+        it("bug case#1 this board already finished with rokushi", ()=> {
+            const solver = new Solver();
+            let results = solver.solve("22235567,12345679,11133448,11111145,s1,136,263,331,411,1p,2p,3p,451,1p,2p,311,4p,1p,217,3p,4p,175");
+            expect(results.length).to.equal(0);
+        });
     });
 });

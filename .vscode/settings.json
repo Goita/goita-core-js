@@ -5,6 +5,5 @@
         "**/.svn": true,
         "**/.hg": true,
         "**/.DS_Store": true
-    },
-    "vsicons.presets.angular": false
+    }, "tsimporter.lowImportance": true
 }

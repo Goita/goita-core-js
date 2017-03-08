@@ -73,8 +73,8 @@ describe('Player', () => {
         });
         it("put an invalid koma", () => {
             let player = new Player(1, "11112228");
-            expect(Player.prototype.putKoma.bind(player, Koma.gyoku)).throw("Does not have the koma");
-            expect(Player.prototype.putKoma.bind(player, Koma.bakko)).throw("Does not have the koma");
+            expect(Player.prototype.putKoma.bind(player, Koma.gyoku)).throws();
+            expect(Player.prototype.putKoma.bind(player, Koma.bakko)).throws();
         });
     });
     describe('#pickLastKoma', () => {

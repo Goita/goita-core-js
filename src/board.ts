@@ -1,9 +1,12 @@
-import { Define } from './define';
+import { Define, Yaku } from './define';
 import { Koma, KomaArray } from './koma';
 import { Player } from './player';
 import { Move, FinishState, BoardHistory } from './history';
 import { ThinkingInfo } from './thinkinginfo';
 import { Util } from './util';
+import { YakuInfo } from './yaku';
+
+
 
 /** Goita Board Class */
 export class Board {
@@ -11,7 +14,7 @@ export class Board {
     public history: BoardHistory;
     private redoStack: Array<Move>;
     private suspendedGoshi: boolean;
-    private _shiCount: Array<number>;
+    private _yakuInfo: Array<YakuInfo>;
 
     private constructor() {
     }
@@ -26,8 +29,8 @@ export class Board {
     }
 
     /** get initial-shi infomation */
-    public get shiCount(): Array<number> {
-        return this._shiCount;
+    public get yakuInfo(): Array<YakuInfo> {
+        return this._yakuInfo;
     }
 
     public get isGoshiSuspended(): boolean {
@@ -35,42 +38,35 @@ export class Board {
     }
 
     public get goshiPlayerNo(): Array<number> {
-        return this._shiCount.map((c, i) => [c, i]).filter(m => m[0] >= 5).map(c => c[1]);
+        return this._yakuInfo.filter((i) => i.yaku === Yaku.goshi || i.yaku === Yaku.goshigoshi_win || i.yaku === Yaku.goshigoshi_opposite).map((i)=> i.playerNo);
     }
 
     public get turnPlayer(): Player {
         return this.players[this.history.turn];
     }
 
+
+
     private init(dealer: number, tegomas: Array<string>): void {
         this.redoStack = new Array<Move>();
         this.history = new BoardHistory(dealer, tegomas);
-        this._shiCount = new Array<number>();
         this.players = new Array<Player>();
         for (let i = 0; i < Define.maxPlayers; i++) {
             let player = new Player(i, tegomas[i]);
             this.players[i] = player;
-            this._shiCount[i] = player.countKoma(Koma.shi);
+
         }
-        this.suspendedGoshi = this._shiCount.filter((c) => c === 5).length === 1;
-        let goshiIndex = -1;
-        for (let i = 0; i < Define.maxPlayers; i++) {
-            let count = this._shiCount[i];
-            if (count < 5) {
-                continue;
+        this._yakuInfo = YakuInfo.from(this.players);
+        this.suspendedGoshi = this._yakuInfo.some((i) => i.yaku === Yaku.goshi || i.yaku === Yaku.goshigoshi_opposite);
+        if (this._yakuInfo.length === 1){
+            const i = this._yakuInfo[0];
+            if(i.yaku !== Yaku.goshi) {
+                this.history.finishState = FinishState.ofFinish(i.playerNo);
             }
-            else if (count === 5) {
-                if (goshiIndex >= 0) {
-                    if ((i + goshiIndex) % 2 === 0) {
-                        this.history.finishState = FinishState.ofFinish(goshiIndex);
-                    } else {
-                        this.suspendedGoshi = true;
-                    }
-                } else {
-                    goshiIndex = i;
-                }
-            } else if (count > 5) {
-                this.history.finishState = FinishState.ofFinish(i);
+        } else if(this._yakuInfo.length >= 2){
+            const i = this._yakuInfo[0];
+            if(i.yaku === Yaku.goshigoshi_win) {
+                this.history.finishState = FinishState.ofFinish(i.playerNo);
             }
         }
     }
@@ -78,8 +74,7 @@ export class Board {
     public play(block: Koma, attack: Koma, playablecheck: boolean = false): void {
         if (playablecheck) {
             if (!this.canPlay(block, attack)) {
-                console.log("cannot play komas. block:" + block.value + " attack: " + attack.value);
-                throw "cannot play given komas";
+                throw new Error("cannot play komas. block:" + block.value + " attack: " + attack.value + " in the board:" + this.toHistoryString());
             }
         }
 
@@ -90,7 +85,7 @@ export class Board {
     public pass(playablecheck: boolean = false): void {
         if (playablecheck) {
             if (!this.canPass()) {
-                throw "cannot pass";
+                throw new Error("cannot pass");
             }
         }
         let move = Move.ofPass(this.turnPlayer.no);
@@ -103,9 +98,12 @@ export class Board {
             return;
         }
         let player = this.players[move.no];
-        player.putKoma(move.block, move.faceDown);
-        player.putKoma(move.attack);
-
+        try{
+            player.putKoma(move.block, move.faceDown);
+            player.putKoma(move.attack);
+        }catch(ex){
+            throw new Error("cannot play move: " + move.toOpenString() + " in the board:" + this.toHistoryString());
+        }
     }
 
     public continueGoshi(): void {
@@ -261,12 +259,9 @@ export class Board {
             }
         }
 
-        // drop less than 5 shi information
-        const shiCount = this._shiCount.slice().map((c) => c >= 5 ? c : 0);
-
         // remove initial-condition-info. like "12345678,12345679,11112345,11112345,s1,"
         let history = this.history.toHiddenString().substring(39);
 
-        return new ThinkingInfo(turn, this.history.dealer, hand, fields, hidden, lastAttack, shiCount, history);
+        return new ThinkingInfo(turn, this.history.dealer, hand, fields, hidden, lastAttack, this._yakuInfo, history);
     }
 }
