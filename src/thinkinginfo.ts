@@ -148,6 +148,7 @@ export class ThinkingInfo {
         const moves = this.getPossibleMoves();
         const attacks = moves.filter((m) => !m.pass && m.block === block).map<Koma>((m) => m.attack);
         if (attacks.length === 0) {
+            // wrong judge when the last attack is King
             throw new Error("invalid block koma " + block.toString() + " is given");
         }
         return attacks;

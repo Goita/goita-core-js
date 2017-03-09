@@ -108,7 +108,7 @@ export class Move {
     }
 
     public toScore(): number {
-        let score = this.attack.Score;
+        let score = this.attack.score;
         return this.doubleUp ? score * 2 : score;
     }
 
@@ -130,16 +130,19 @@ export class FinishState {
     nextDealerNo: number;
     redeal: boolean;
     aborted: boolean;
+    wonScore: number;
 
     private constructor() {
         this.nextDealerNo = -1;
         this.redeal = false;
         this.aborted = false;
+        this.wonScore = 0;
     }
 
-    public static ofFinish(no: number): FinishState {
+    public static ofFinish(no: number, score: number): FinishState {
         let f = new FinishState();
         f.nextDealerNo = no;
+        f.wonScore = score;
         return f;
     }
 
@@ -231,7 +234,7 @@ export class BoardHistory {
         this.turn = Util.getNextTurn(move.no);
 
         if (this.lastMove.finish) {
-            this.finishState = FinishState.ofFinish(this.lastMove.no);
+            this.finishState = FinishState.ofFinish(this.lastMove.no, this.lastMove.toScore());
         }
     }
 

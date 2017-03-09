@@ -1,12 +1,12 @@
 import * as goita from "./";
 
-const solver = new goita.Solver();
-let ret = solver.solve("24445679,11113336,11123457,11122558,s2,261,3p,4p,1p,213,331,411,1p,2p,311,415,154,2p,3p,482,124,2p,347");
+let b = goita.Board.createFromString("11244556,12234569,11123378,11113457,s3,371,411,115,2p,3p,4p,145,252,3p,4p,124,242,323");
+b.play(goita.Koma.bakko, goita.Koma.kin);
+console.log(b);
 
-ret.sort((m1, m2) => m2.score - m1.score);
-for (const evm of ret) {
-    // tslint:disable-next-line:no-console
-    console.log(evm.move.toOpenTextString() + ", " + evm.move.toOpenString() + " ,score: " + evm.score);
-}
+// for (const evm of ret) {
+//     // tslint:disable-next-line:no-console
+//     console.log(evm.move.toOpenTextString() + ", " + evm.move.toOpenString() + " ,score: " + evm.score);
+// }
 
 process.exit(0);

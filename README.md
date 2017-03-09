@@ -1,68 +1,25 @@
+Goita Core Library
+===
+This library provides Goita game methods.
+
 [![Build Status](https://travis-ci.org/Goita/goita-core-js.svg?branch=master)](https://travis-ci.org/Goita/goita-core-js)
 
-# Goita Core Library
-
-It provides basic Goita game method, can be referenced by node.js application and web application.
-
-## Goita rules
-
-Rules([Japanese](http://goita.jp/rule/))|([English](https://www.pagat.com/climbing/goita.html))
-
-## Usage
-
-To start the 150 point match game, create game object.
-
-__Node.js__
-
-```javascript
-import * goita from "goita-core";
-
-const game = goita.Factory.createGame();
-game.startNewGame();
-
-LABEL:ROUND START
-
-//deal the all koma randomly
-game.startNewDeal();
-console.log("dealer is player" + game.board.turnPlayer.no);
-
-// goshi check
-if(game.board.isGoshiSuspended){
-    // question redeal or play to goshi player
-    const goshiP: number[] = game.board.goshiPlayerNo;
-    // ask goshi player's to continue...
-
-    // redeal
-    game.board.redeal();
-    goto: ROUND START
-
-    //or play
-    game.board.continueGoshi();
-}
-
-LABEL: PLAYERS PLAY
-
-game.board.play(Koma.shi, Koma.kin);
-//...and so on
-
-//is the board finished to deal?
-if(game.board.isEndOfDeal){
-
-    if(!game.isEnd){
-        //Next deal until any player wins
-        game.startNewDeal();
-        goto: ROUND START
-    } else {
-        goto: END
-    }
-}
-
-goto: PLAYERS PLAY
-
-LABEL : END
+Install
+---
+```
+npm install goita-core
 ```
 
-## History string
+About Goita
+---
+- Noto Goita Preservation Society's official website [http://goita.jp](http://goita.jp)
+- Rules([Japanese](http://goita.jp/rule/))|([English](https://www.pagat.com/climbing/goita.html))
+
+Sample
+---
+see [/sample/sample1.js](./sample/sample1.js)
+
+HistoryString
 ---
 
 A game state may be saved on one line string. Here is the format.
@@ -88,3 +45,7 @@ let historyStr = p1 + "," + p2 + "," + p3 + "," + p4 + ","
                 + dealer + "," + playmoves;
 //console.log(historyStr); //12345678,12345679,11112345,11112345,s1,113,2p,3p,431,1p,2p,315
 ```
+
+Licence
+---
+MIT License.

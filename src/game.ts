@@ -68,9 +68,16 @@ export class Game {
                 if (f.redeal || f.aborted) {
                     return;
                 }
-                const m = board.history.lastMove;
-                this.scores[m.no % 2] += m.toScore();
-                this.roundCount++;
+                if(board.yakuInfo.some((yi)=> yi.isFinishingPlay)){
+
+                } else {
+                    const m = board.history.lastMove;
+                    if(!m) {
+                        throw new Error("lastMove is null when the board is EndOfDeal. history: " + board.toHistoryString());
+                    }
+                    this.scores[m.no % 2] += m.toScore();
+                    this.roundCount++;
+                }
             }
         };
         for (const board of this.history) {

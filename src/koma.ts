@@ -35,7 +35,7 @@ export class Koma {
         throw new Error("Invalid koma value " + val + " was given");
     }
 
-    public get Score(): number {
+    public get score(): number {
         if (this === Koma.hidden) {
             throw new Error("cannot get the score of Koma.hidden");
         }
@@ -122,6 +122,24 @@ export class Koma {
 export class KomaArray {
     //currently cannot extends Array.prototype ES5.
     //implement array methods as util class instead to extend prototype.
+
+    public static findIndex(target: Array<Koma>, koma: Koma): number{
+        for(let i=0;i<target.length;i++){
+            if(target[i].equals(koma)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static findIndexExact(target: Array<Koma>, koma: Koma): number{
+        for(let i=0;i<target.length;i++){
+            if(target[i].equalsExact(koma)){
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public static contains(target: Array<Koma>, koma: Koma): boolean {
         return target.some((k) => k.equals(koma));

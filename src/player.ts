@@ -30,7 +30,7 @@ export class Player {
     }
 
     public putKoma(koma: Koma, faceDown: boolean = false): void {
-        let i = this.hand.indexOf(koma);
+        let i = KomaArray.findIndexExact(this.hand, koma);
         if (i < 0) {
             throw new Error("player#" + this.no + " does not have " + koma + " in hand");
         }

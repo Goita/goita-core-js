@@ -61,12 +61,12 @@ export class Board {
         if (this._yakuInfo.length === 1){
             const i = this._yakuInfo[0];
             if(i.yaku !== Yaku.goshi) {
-                this.history.finishState = FinishState.ofFinish(i.playerNo);
+                this.history.finishState = FinishState.ofFinish(i.playerNo, i.score);
             }
         } else if(this._yakuInfo.length >= 2){
             const i = this._yakuInfo[0];
             if(i.yaku === Yaku.goshigoshi_win) {
-                this.history.finishState = FinishState.ofFinish(i.playerNo);
+                this.history.finishState = FinishState.ofFinish(i.playerNo, i.score);
             }
         }
     }
