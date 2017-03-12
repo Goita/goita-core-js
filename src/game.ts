@@ -1,6 +1,7 @@
 import { Define } from './define';
 import { Util } from './util';
 import { Board } from './board';
+import { DealOptions } from "./dealoptions";
 
 /** Goita Game Class */
 export class Game {
@@ -8,6 +9,7 @@ export class Game {
     public roundCount: number;
     public scores: Array<number>;
     public initialScores: Array<number>;
+    public dealOptions: DealOptions;
     public board: Board;
     public history: Array<Board>;
 
@@ -21,11 +23,19 @@ export class Game {
         this.winScore = Define.defaultWinScore;
         this.scores = [0, 0];
         this.initialScores = [0, 0];
+        this.dealOptions = new DealOptions();
     }
 
     public setInitialScore(scores: number[]): void {
         this.initialScores = scores;
         this.updateGameState();
+    }
+
+    public setDealOptions(noGoshi: boolean, noYaku: boolean): void {
+        const options = new DealOptions();
+        options.noGoshi = noGoshi;
+        options.noYaku = noYaku;
+        this.dealOptions = options;
     }
 
     /** set up a new game */
@@ -68,11 +78,11 @@ export class Game {
                 if (f.redeal || f.aborted) {
                     return;
                 }
-                if(board.yakuInfo.some((yi)=> yi.isFinishingPlay)){
+                if (board.yakuInfo.some((yi) => yi.isFinishingPlay)) {
 
                 } else {
                     const m = board.history.lastMove;
-                    if(!m) {
+                    if (!m) {
                         throw new Error("lastMove is null when the board is EndOfDeal. history: " + board.toHistoryString());
                     }
                     this.scores[m.no % 2] += m.toScore();

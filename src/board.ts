@@ -5,6 +5,7 @@ import { Move, FinishState, BoardHistory } from './history';
 import { ThinkingInfo } from './thinkinginfo';
 import { Util } from './util';
 import { YakuInfo } from './yaku';
+import { DealOptions } from "./dealoptions";
 
 
 
@@ -38,7 +39,7 @@ export class Board {
     }
 
     public get goshiPlayerNo(): Array<number> {
-        return this._yakuInfo.filter((i) => i.yaku === Yaku.goshi || i.yaku === Yaku.goshigoshi_win || i.yaku === Yaku.goshigoshi_opposite).map((i)=> i.playerNo);
+        return this._yakuInfo.filter((i) => i.yaku === Yaku.goshi || i.yaku === Yaku.goshigoshi_win || i.yaku === Yaku.goshigoshi_opposite).map((i) => i.playerNo);
     }
 
     public get turnPlayer(): Player {
@@ -58,14 +59,14 @@ export class Board {
         }
         this._yakuInfo = YakuInfo.from(this.players);
         this.suspendedGoshi = this._yakuInfo.some((i) => i.yaku === Yaku.goshi || i.yaku === Yaku.goshigoshi_opposite);
-        if (this._yakuInfo.length === 1){
+        if (this._yakuInfo.length === 1) {
             const i = this._yakuInfo[0];
-            if(i.yaku !== Yaku.goshi) {
+            if (i.yaku !== Yaku.goshi) {
                 this.history.finishState = FinishState.ofFinish(i.playerNo, i.score);
             }
-        } else if(this._yakuInfo.length >= 2){
+        } else if (this._yakuInfo.length >= 2) {
             const i = this._yakuInfo[0];
-            if(i.yaku === Yaku.goshigoshi_win) {
+            if (i.yaku === Yaku.goshigoshi_win) {
                 this.history.finishState = FinishState.ofFinish(i.playerNo, i.score);
             }
         }
@@ -98,10 +99,10 @@ export class Board {
             return;
         }
         let player = this.players[move.no];
-        try{
+        try {
             player.putKoma(move.block, move.faceDown);
             player.putKoma(move.attack);
-        }catch(ex){
+        } catch (ex) {
             throw new Error("cannot play move: " + move.toOpenString() + " in the board:" + this.toHistoryString());
         }
     }
@@ -217,10 +218,19 @@ export class Board {
         }
     }
 
-    public static createRandomly(dealer: number): Board {
+    public static createRandomly(dealer: number, options?: DealOptions): Board {
         let board = new Board();
-        let tegomas = Util.dealTegomas();
-        board.init(dealer, tegomas);
+        while (true) {
+            let tegomas = Util.dealTegomas();
+            board.init(dealer, tegomas);
+            if (!options) {
+                break;
+            }
+            if (options.areValid(board)) {
+                break;
+            }
+        }
+
         return board;
     }
 
