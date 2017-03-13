@@ -43,3 +43,6 @@ tmp
 
 # webpack output directory
 build
+
+# profile code output
+profile/bundle.js
