@@ -123,18 +123,18 @@ export class KomaArray {
     //currently cannot extends Array.prototype ES5.
     //implement array methods as util class instead to extend prototype.
 
-    public static findIndex(target: Array<Koma>, koma: Koma): number{
-        for(let i=0;i<target.length;i++){
-            if(target[i].equals(koma)){
+    public static findIndex(target: Array<Koma>, koma: Koma): number {
+        for (let i = 0; i < (target.length | 0); i = (i + 1) | 0) {
+            if (target[i].equals(koma)) {
                 return i;
             }
         }
         return -1;
     }
 
-    public static findIndexExact(target: Array<Koma>, koma: Koma): number{
-        for(let i=0;i<target.length;i++){
-            if(target[i].equalsExact(koma)){
+    public static findIndexExact(target: Array<Koma>, koma: Koma): number {
+        for (let i = 0; i < (target.length | 0); i = (i + 1) | 0) {
+            if (target[i].equalsExact(koma)) {
                 return i;
             }
         }
@@ -177,7 +177,9 @@ export class KomaArray {
 
     public static getUnique(target: Koma[]): Array<Koma> {
         let uniqueList = new Array<Koma>();
-        for (let koma of target) {
+        const targetLen = target.length;
+        for (let i = 0; i < targetLen; i = (i + 1) | 0) {
+            let koma = target[i];
             if (koma.equals(Koma.empty)) {
                 continue;
             }
@@ -191,7 +193,7 @@ export class KomaArray {
 
     public static createFrom(hand_or_field: string) {
         let a = new Array<Koma>();
-        for (let i = 0; i < hand_or_field.length; i++) {
+        for (let i = 0; i < (hand_or_field.length | 0); i = (i + 1) | 0) {
             a[i] = Koma.fromStr(hand_or_field[i]);
         }
         return a;
@@ -199,7 +201,7 @@ export class KomaArray {
 
     public static createEmptyField(): Array<Koma> {
         let str = "";
-        for (let i = 0; i < Define.maxFieldLength; i++) {
+        for (let i = 0; i < (Define.maxFieldLength | 0); i = (i + 1) | 0) {
             str += Koma.empty.value;
         }
         return KomaArray.createFrom(str);

@@ -201,7 +201,7 @@ export class BoardHistory {
     }
 
     public get lastAttackMove(): Move {
-        for (let i = this.moveStack.length - 1; i >= 0; i--) {
+        for (let i = (this.moveStack.length - 1)|0; i >= 0; i = (i - 1)|0) {
             let m = this.moveStack[i];
             if (!m.pass) {
                 return m;
@@ -260,7 +260,7 @@ export class BoardHistory {
         let historyArray = history.split(Define.historyStringDelimiter);
 
         let tegomas = new Array<string>();
-        for (let i = 0; i < Define.maxPlayers; i++) {
+        for (let i = 0; i < (Define.maxPlayers|0); i = (i+1)|0) {
             tegomas.push(historyArray[i]);
         }
 
@@ -301,7 +301,7 @@ export class BoardHistory {
 
     public toString(): string {
         let str = new Array<string>();
-        for (let i = 0; i < Define.maxPlayers; i++) {
+        for (let i = 0; i < (Define.maxPlayers|0); i = (i+1)|0) {
             const hand = KomaArray.createFrom(this.hands[i]).sort();
             str.push(KomaArray.toString(hand));
         }
@@ -314,7 +314,7 @@ export class BoardHistory {
 
     public toHiddenString(): string {
         let str = new Array<string>();
-        for (let i = 0; i < Define.maxPlayers; i++) {
+        for (let i = 0; i < (Define.maxPlayers|0); i = (i+1)|0) {
             if(i === this.turn){
                 const hand = KomaArray.createFrom(this.hands[i]).sort();
                 str.push(KomaArray.toString(hand));

@@ -52,7 +52,7 @@ export class Board {
         this.redoStack = new Array<Move>();
         this.history = new BoardHistory(dealer, tegomas);
         this.players = new Array<Player>();
-        for (let i = 0; i < Define.maxPlayers; i++) {
+        for (let i = 0; i < (Define.maxPlayers|0); i = (i+1)|0) {
             let player = new Player(i, tegomas[i]);
             this.players[i] = player;
 
@@ -239,7 +239,7 @@ export class Board {
         let history = BoardHistory.fromString(historyStr);
         let board = new Board();
         board.init(history.dealer, history.hands);
-        for (let i = 0; i < history.moveStack.length; i++) {
+        for (let i = 0; i < (history.moveStack.length|0); i = (i+1)|0) {
             board.continueGoshi();
             board.playMove(history.moveStack[i]);
         }

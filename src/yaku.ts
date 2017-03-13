@@ -37,7 +37,7 @@ export class YakuInfo {
 
     public static from(hands: string[] | Player[]): YakuInfo[]{
         const yakuinfo = new Array<YakuInfo>();
-        for (let i=0;i<Define.maxPlayers;i++) {
+        for (let i=0;i<(Define.maxPlayers|0);i = (i+1)|0) {
             const h = hands[i];
             const shiCount = h instanceof Player ? h.countKoma(Koma.shi) : KomaArray.count(KomaArray.createFrom(h),Koma.shi);
             const hand = h instanceof Player ? h.hand : KomaArray.createFrom(h);

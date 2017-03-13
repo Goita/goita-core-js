@@ -89,7 +89,7 @@ export class Player {
             || this.field.length !== this.hiddenfield.length) {
             return diff;
         }
-        for (let i = 0; i < Define.maxFieldLength; i++) {
+        for (let i = 0; i < (Define.maxFieldLength|0); i = (i+1)|0) {
             if (this.field[i].equals(Koma.hidden)) {
                 diff[i] = this.hiddenfield[i];
             }

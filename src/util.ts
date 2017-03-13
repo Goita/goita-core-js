@@ -16,7 +16,8 @@ export module Util {
 
     export function cut<T>(array: Array<T>, len: number): Array<Array<T>> {
         let ret = new Array<Array<T>>();
-        for (let i = 0; i < (array.length / len); i++) {
+        const cutCount = array.length / len;
+        for (let i = 0; i < cutCount; i = (i+1)|0) {
             ret.push(array.slice(i * len, (i + 1) * len));
         }
         return ret;
@@ -25,7 +26,7 @@ export module Util {
     /** shuffle array - with Fisher-Yates algorithm */
     export function shuffle<T>(array: Array<T>) {
         let n = array.length;
-        for (let i = n - 1; i > 0; i--) {
+        for (let i = n - 1; i > 0; i=i-1) {
             let j = rand.integer(0, i);
             let tmp = array[i];
             array[i] = array[j];

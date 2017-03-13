@@ -65,9 +65,11 @@ export class Solver {
         }
         let moves = this.board.toThinkingInfo().getPossibleMoves();
         let v: EvalScore;
+        const movesCount = moves.length;
         if (Util.isSameTeam(this.playerNo, this.board.turnPlayer.no)) {
             v = min;
-            for (let move of moves) {
+            for (let i = 0; i < movesCount; i = (i + 1) | 0) {
+                let move = moves[i];
                 let t = this.alpha_beta_search(move, v, max);
                 if (t.score > v.score) {
                     v = t;
@@ -79,7 +81,8 @@ export class Solver {
             }
         } else {
             v = max;
-            for (let move of moves) {
+            for (let i = 0; i < movesCount; i = (i + 1) | 0) {
+                let move = moves[i];
                 let t = this.alpha_beta_search(move, min, v);
                 if (t.score < v.score) {
                     v = t;
