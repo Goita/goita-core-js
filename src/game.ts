@@ -31,10 +31,7 @@ export class Game {
         this.updateGameState();
     }
 
-    public setDealOptions(noGoshi: boolean, noYaku: boolean): void {
-        const options = new DealOptions();
-        options.noGoshi = noGoshi;
-        options.noYaku = noYaku;
+    public setDealOptions(options: DealOptions): void {
         this.dealOptions = options;
     }
 
@@ -96,6 +93,7 @@ export class Game {
         scanBoard(this.board);
     }
 
+    /** returns true if any team's score reach to win-score */
     public get isEnd(): boolean {
         this.updateGameState();
         for (const s of this.scores) {

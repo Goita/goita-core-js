@@ -5,6 +5,7 @@ export { Move, BoardHistory } from './history';
 export { Player } from './player';
 export { Board } from './board';
 export { YakuInfo } from "./yaku";
+export { DealOptions } from "./dealoptions";
 export { Game } from './game';
 export { ThinkingInfo } from './thinkinginfo';
 export { Solver } from './solver';
