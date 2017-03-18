@@ -15,7 +15,7 @@ About Goita
 - Noto Goita Preservation Society's official website [http://goita.jp](http://goita.jp)
 - Rules([Japanese](http://goita.jp/rule/))|([English](https://www.pagat.com/climbing/goita.html))
 
-Sample
+Sample code
 ---
 see [/sample/sample1.js](./sample/sample1.js)
 
@@ -23,7 +23,7 @@ HistoryString
 ---
 
 A game state may be saved on one line string. Here is the format.
-It aims for human readable and writable, giving up the effect of minimum data size. It is still small size. 
+It aims for human readable and writable.
 
 - The first 8 charactors show 1st player's initial tegoma.
 - The next 8 charactors show 2nd player's initial tegoma.
