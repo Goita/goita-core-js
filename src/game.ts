@@ -76,15 +76,17 @@ export class Game {
                     return;
                 }
                 if (board.yakuInfo.some((yi) => yi.isFinishingPlay)) {
-
+                    for(const yi of board.yakuInfo){
+                        this.scores[yi.playerNo % 2] += yi.score;
+                    }
                 } else {
                     const m = board.history.lastMove;
                     if (!m) {
                         throw new Error("lastMove is null when the board is EndOfDeal. history: " + board.toHistoryString());
                     }
                     this.scores[m.no % 2] += m.toScore();
-                    this.roundCount++;
                 }
+                this.roundCount++;
             }
         };
         for (const board of this.history) {

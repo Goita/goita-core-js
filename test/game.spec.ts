@@ -43,4 +43,13 @@ describe('Game', () => {
             expect(game.isEnd).to.be.true;
         });
     });
+    describe("#scores", () => {
+        it("count 6 shi", () => {
+            const game = Factory.createGame();
+            game.startNewGame();
+            game.startNewDealWithInitialState("11111178,22234567,11433569,11234455,s1");
+            game.startNewDealWithInitialState("11112278,11234567,11433569,11234455,s1");
+            expect(game.scores).to.deep.equal([50, 0]);
+        });
+    });
 });
