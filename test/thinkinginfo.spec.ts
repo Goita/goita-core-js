@@ -120,4 +120,23 @@ describe('ThinkingInfo', () => {
             expect(info.canPass).to.be.false;
         });
     });
+
+    describe('#shiftTurn', () => {
+        it('shift 1 to 0', () => {
+            const info = new ThinkingInfo(1, 0, "12345679", ["x3000000", "00000000", "00000000", "00000000"], "00000000",
+                Move.ofFaceDown(0, Koma.hidden, Koma.bakko), [], "1x3");
+            ThinkingInfo.shiftTurn(info, 0);
+            expect(info.turn).to.equal(0);
+            expect(info.dealer).to.equal(3);
+            expect(info.history).to.equal("4x3");
+            expect(info.lastAttack.no).to.equal(3);
+            expect(info.fields).to.deep.equal(["00000000", "00000000", "00000000", "x3000000"]);
+        });
+
+        it('shift does not change anything', () => {
+            const info = new ThinkingInfo(0, 0, "12345679", ["x3000000", "00000000", "00000000", "00000000"], "00000000",
+                Move.ofFaceDown(0, Koma.shi, Koma.bakko), [], "113,2p,3p,4p");
+            expect(info.turn).to.equal(0);
+        });
+    });
 });

@@ -1,6 +1,7 @@
 import { Koma, KomaArray } from './koma';
-import { Move } from './history';
+import { Move, BoardHistory } from './history';
 import { YakuInfo } from "./yaku";
+import { Util } from "./util";
 import { Yaku } from "./define";
 
 /** the board infomation whitch player think with*/
@@ -26,7 +27,7 @@ export class ThinkingInfo {
     /** moves history */
     public history: string;
 
-    public constructor(turn: number, dealer:number, hand: string, fields: string[], hidden: string, lastAttack: Move, yakuInfo: YakuInfo[], history: string) {
+    public constructor(turn: number, dealer: number, hand: string, fields: string[], hidden: string, lastAttack: Move, yakuInfo: YakuInfo[], history: string) {
         this.turn = turn;
         this.dealer = dealer;
         this.hand = hand;
@@ -38,11 +39,40 @@ export class ThinkingInfo {
         this.history = history;
     }
 
+    /** Shift the turn as if the turn player was the desired turn. It's useful to normalize the view of board */
+    public static shiftTurn(info: ThinkingInfo, desiredTurn: number) {
+        while (info.turn !== desiredTurn) {
+            info.turn = Util.shiftTurn(info.turn, 1);
+            info.dealer = Util.shiftTurn(info.dealer, 1);
+            const tempFields = new Array<string>();
+            for(let i=0;i<4;i++){
+                tempFields[i] = info.fields[Util.shiftTurn(i,-1)];
+            }
+
+            info.fields = tempFields;
+            info.lastAttack.no = Util.shiftTurn(info.lastAttack.no, 1);
+            const yakuInfo = new Array<YakuInfo>();
+            for(const yi of info.yakuInfo){
+                const newYakuInfo = new YakuInfo(Util.shiftTurn(yi.playerNo, 1), yi.yaku, yi.score);
+                yakuInfo.push(newYakuInfo);
+            }
+            info.yakuInfo = yakuInfo;
+            const moves = BoardHistory.parseMoveHistory(info.history.split(","));
+            const newMoves = new Array<Move>();
+            for(const m of moves){
+                m.no = Util.shiftTurn(m.no, 1);
+                newMoves.push(m);
+            }
+            info.history = moves.join(",");
+        }
+    }
+
+    /** returns list of all possible moves */
     public getPossibleMoves(): Array<Move> {
         let moves = new Array<Move>();
 
         // no possible moves with finishing yaku
-        if(this.yakuInfo.some((i)=>i.yaku === Yaku.rokushi || i.yaku === Yaku.nanashi || i.yaku === Yaku.hachishi || i.yaku === Yaku.goshigoshi_win)) {
+        if (this.yakuInfo.some((i) => i.yaku === Yaku.rokushi || i.yaku === Yaku.nanashi || i.yaku === Yaku.hachishi || i.yaku === Yaku.goshigoshi_win)) {
             return moves;
         }
         if (this.lastAttack && this.lastAttack.finish) {
@@ -157,4 +187,6 @@ export class ThinkingInfo {
     public get canPass(): boolean {
         return this.lastAttack && this.lastAttack.no !== this.turn;
     }
+
+
 }

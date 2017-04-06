@@ -1,6 +1,6 @@
 {
   "name": "goita-core",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Goita Core Library in JavaScript",
   "private": false,
   "main": "lib/index.js",
