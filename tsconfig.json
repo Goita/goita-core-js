@@ -9,7 +9,7 @@
         "noImplicitUseStrict": true,
         "importHelpers": true,
         "newLine": "LF",
-        "removeComments": true,
+        "removeComments": false,
         "preserveConstEnums": true,
         "outDir": "lib",
         "sourceMap": true,
