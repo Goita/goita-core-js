@@ -34,6 +34,23 @@ describe('Board', () => {
             expect(testBoard.history.lastMove.toOpenString()).to.equal("236");
         });
     });
+    describe('#play: kingFallback', () => {
+        beforeEach(()=>{
+            testBoard.kingFallbacks = true;
+        });
+        it("gyoku -> ou", () => {
+            expect(testBoard.play.bind(testBoard, Koma.gyoku, Koma.bakko)).not.throw();
+        });
+        it("ou -> gyoku", () => {
+            testBoard.play(Koma.shi, Koma.gin);
+            expect(testBoard.play.bind(testBoard, Koma.ou, Koma.gon)).not.throw();
+        });
+        it("ou, ou -> ou, gyoku", () => {
+            testBoard = Board.createFromString("12345689,12345677,11112345,11112345,s1");
+            testBoard.kingFallbacks = true;
+            expect(testBoard.play.bind(testBoard, Koma.ou, Koma.ou)).not.throw();
+        });
+    });
 
     describe('#canPlay', () => {
         //dealer turn

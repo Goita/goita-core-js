@@ -13,6 +13,8 @@ import { DealOptions } from "./dealoptions";
 export class Board {
     public players: Array<Player>;
     public history: BoardHistory;
+    public kingFallbacks: boolean = false;
+    public showDebuggingInfo: boolean = false;
     private redoStack: Array<Move>;
     private suspendedGoshi: boolean;
     private _yakuInfo: Array<YakuInfo>;
@@ -52,7 +54,7 @@ export class Board {
         this.redoStack = new Array<Move>();
         this.history = new BoardHistory(dealer, tegomas);
         this.players = new Array<Player>();
-        for (let i = 0; i < (Define.maxPlayers|0); i = (i+1)|0) {
+        for (let i = 0; i < (Define.maxPlayers | 0); i = (i + 1) | 0) {
             let player = new Player(i, tegomas[i]);
             this.players[i] = player;
 
@@ -99,6 +101,20 @@ export class Board {
             return;
         }
         let player = this.players[move.no];
+        const fallbackMap = { "8": Koma.gyoku, "9": Koma.ou } as { [key: string]: Koma };
+        if (this.kingFallbacks) {
+            if (move.attack.isKing && move.block.isKing) {
+                if (move.attack.equalsExact(move.block)) {
+                    move.attack = fallbackMap[move.attack.value];
+                }
+            }
+            else if (move.attack.isKing && !KomaArray.containsExact(player.hand, move.attack)) {
+                move.attack = fallbackMap[move.attack.value];
+            }
+            else if (move.block.isKing && !KomaArray.containsExact(player.hand, move.block)) {
+                move.block = fallbackMap[move.block.value];
+            }
+        }
         try {
             player.putKoma(move.block, move.faceDown);
             player.putKoma(move.attack);
@@ -157,22 +173,29 @@ export class Board {
     }
 
     public canPlayMove(move: Move): boolean {
+        const allTheOtherPlayersPassed = this.turnPlayer.no === this.history.lastAttacker;
         if (move.pass) {
-            return this.turnPlayer.no !== this.history.lastAttacker;
+            return !allTheOtherPlayersPassed;
         }
 
-        if (move.faceDown && this.turnPlayer.no !== this.history.lastAttacker) {
-            console.log("REASON: cannot play face down move, because I am not the last attacker");
+        if (move.faceDown && !allTheOtherPlayersPassed) {
+            if (this.showDebuggingInfo) {
+                console.log("REASON: cannot play face down move, because I am not the last attacker");
+            }
             return false;
         }
 
-        if (!move.faceDown && this.turnPlayer.no === this.history.lastAttacker) {
-            console.log("REASON: must play face down move, because I am the last attaker");
+        if (!move.faceDown && !move.finish && allTheOtherPlayersPassed) {
+            if (this.showDebuggingInfo) {
+                console.log("REASON: must play face down move, because I am the last attaker");
+            }
             return false;
         }
 
-        if (!move.faceDown && !move.block.canBlock(this.history.lastAttackMove.attack)) {
-            console.log("REASON: cannot match to the last attack");
+        if (!move.faceDown && !allTheOtherPlayersPassed && !move.block.canBlock(this.history.lastAttackMove.attack)) {
+            if (this.showDebuggingInfo) {
+                console.log("REASON: cannot match to the last attack");
+            }
             return false;
         }
 
@@ -239,7 +262,7 @@ export class Board {
         let history = BoardHistory.fromString(historyStr);
         let board = new Board();
         board.init(history.dealer, history.hands);
-        for (let i = 0; i < (history.moveStack.length|0); i = (i+1)|0) {
+        for (let i = 0; i < (history.moveStack.length | 0); i = (i + 1) | 0) {
             board.continueGoshi();
             board.playMove(history.moveStack[i]);
         }

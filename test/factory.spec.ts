@@ -14,7 +14,7 @@ describe('Factory', () => {
     describe('#createBoard', () => {
         it("return board object", () => {
             let board = Factory.createBoard();
-            expect(board.turnPlayer.no).to.equal(0);
+            expect(board.turnPlayer.no).to.be.within(0, 3);
         });
     });
 });

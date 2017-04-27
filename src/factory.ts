@@ -1,5 +1,6 @@
 import { Game } from "./game";
 import { Board } from "./board";
+import { Util} from "./util";
 
 /** GoitaCore factory class */
 export class Factory {
@@ -9,9 +10,9 @@ export class Factory {
         return new Game();
     }
 
-    /** create a new board and the dealer is player 1 */
+    /** create a new board. initial hands and dealer are randomly chosen */
     public static createBoard(): Board {
-        return Board.createRandomly(0);
+        return Board.createRandomly(Util.rand.integer(0, 3));
     }
 
     /** create a board from history string */
