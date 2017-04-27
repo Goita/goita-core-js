@@ -1,46 +1,46 @@
 {
-  "name": "goita-core",
-  "version": "0.1.9",
-  "description": "Goita Core Library in JavaScript",
-  "private": false,
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "scripts": {
-    "build": "tsc -p . && webpack",
-    "test": "mocha --compilers ts:ts-node/register",
-    "inspector": "node-debug profile/solver.js",
-    "profile": "node profile/solver.js",
-    "bundle": "webpack --config ./profile/webpack.config.js --display-error-details"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Goita/goita-core-js.git"
-  },
-  "keywords": [
-    "goita",
-    "game"
-  ],
-  "author": "yoskeoka",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Goita/goita-core-js/issues"
-  },
-  "dependencies": {
-    "@types/random-js": "^1.0.28",
-    "random-js": "^1.0.8",
-    "tslib": "^1.2.0"
-  },
-  "devDependencies": {
-    "@types/chai": "^3.4.34",
-    "@types/mocha": "^2.2.38",
-    "@types/node": "^6.0.0",
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
-    "node-inspector": "^0.12.10",
-    "ts-node": "^1.7.0",
-    "tslint": "^4.0.2",
-    "typescript": "^2.0.10",
-    "v8-profiler": "^5.6.5",
-    "webpack": "^2.2.1"
-  }
+    "name": "goita-core",
+    "version": "0.1.10",
+    "description": "Goita Core Library in JavaScript",
+    "private": false,
+    "main": "lib/index.js",
+    "typings": "lib/index.d.ts",
+    "scripts": {
+        "build": "tsc -p . && webpack",
+        "test": "mocha --compilers ts:ts-node/register",
+        "inspector": "node-debug profile/solver.js",
+        "profile": "node profile/solver.js",
+        "bundle": "webpack --config ./profile/webpack.config.js --display-error-details"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Goita/goita-core-js.git"
+    },
+    "keywords": [
+        "goita",
+        "game"
+    ],
+    "author": "yoskeoka",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Goita/goita-core-js/issues"
+    },
+    "dependencies": {
+        "@types/random-js": "^1.0.28",
+        "random-js": "^1.0.8",
+        "tslib": "^1.2.0"
+    },
+    "devDependencies": {
+        "@types/chai": "^3.4.34",
+        "@types/mocha": "^2.2.38",
+        "@types/node": "^6.0.0",
+        "chai": "^3.5.0",
+        "mocha": "^3.2.0",
+        "node-inspector": "^0.12.10",
+        "ts-node": "^1.7.0",
+        "tslint": "^4.0.2",
+        "typescript": "^2.0.10",
+        "v8-profiler": "^5.6.5",
+        "webpack": "^2.2.1"
+    }
 }
