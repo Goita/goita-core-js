@@ -1,4 +1,4 @@
-import { Board, Koma, KomaArray } from '../src';
+import { Board, Koma, KomaArray, Move } from '../src';
 import * as Chai from "chai";
 import { Yaku } from '../src/define';
 
@@ -10,10 +10,29 @@ describe('Board', () => {
         testBoard = Board.createFromString("12345678,12345679,11112345,11112345,s1");
     });
 
-    describe('#constructor', () => {
+    describe('#createRandomly', () => {
         it("create object", () => {
             let dealer = 2;
             let table = Board.createRandomly(dealer);
+            expect(table.turnPlayer.no).to.equal(dealer);
+            expect(table.history.lastAttacker).to.equal(dealer);
+            expect(table.history.turn).to.equal(dealer);
+            expect(table.history.moveStack.length).to.equal(0);
+        });
+    });
+
+    describe('#createFromString', () => {
+        it("create test", () => {
+            let dealer = 0;
+            let table = Board.createFromString("12345678,12345679,11112345,11112345,s1");
+            expect(table.turnPlayer.no).to.equal(dealer);
+            expect(table.history.lastAttacker).to.equal(dealer);
+            expect(table.history.turn).to.equal(dealer);
+            expect(table.history.moveStack.length).to.equal(0);
+        });
+        it("create initial state with hidden", () => {
+            let dealer = 0;
+            let table = Board.createFromString("12345678,xxxxxxxx,xxxxxxxx,xxxxxxxx,s1");
             expect(table.turnPlayer.no).to.equal(dealer);
             expect(table.history.lastAttacker).to.equal(dealer);
             expect(table.history.turn).to.equal(dealer);
@@ -34,8 +53,24 @@ describe('Board', () => {
             expect(testBoard.history.lastMove.toOpenString()).to.equal("236");
         });
     });
+
+    describe("#playMove", () => {
+        it("replay hidden history", () => {
+            // "3xxxxxxx,12345679,xxxxxxxx,123xxxxx,s1,1x3,2p,3p,431,1p,2p,3p,4x2"
+            const board = Board.createFromString("3xxxxxxx,12345679,xxxxxxxx,123xxxxx,s1");
+            board.playMove(Move.ofFaceDown(0, Koma.hidden, Koma.bakko));
+            board.playMove(Move.ofPass(1));
+            board.playMove(Move.ofPass(2));
+            board.playMove(Move.ofMatch(3, Koma.bakko, Koma.shi));
+            board.playMove(Move.ofPass(0));
+            board.playMove(Move.ofPass(1));
+            board.playMove(Move.ofPass(2));
+            board.playMove(Move.ofFaceDown(3, Koma.hidden, Koma.gon));
+            expect(board.toHistoryString()).to.equal("3xxxxxxx,12345679,xxxxxxxx,123xxxxx,s1,1x3,2p,3p,431,1p,2p,3p,4x2");
+        });
+    });
     describe('#play: kingFallback', () => {
-        beforeEach(()=>{
+        beforeEach(() => {
             testBoard.kingFallbacks = true;
         });
         it("gyoku -> ou", () => {

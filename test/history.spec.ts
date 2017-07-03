@@ -26,6 +26,14 @@ describe('Move', () => {
             expect(move.no).to.equal(2);
             expect(move.pass).to.equal(true);
         });
+        it("parses Hidden move string", () => {
+            let move = Move.fromStr("3x2", 2);
+            expect(move.no).to.equal(2);
+            expect(move.block).to.equal(Koma.hidden);
+            expect(move.attack).to.equal(Koma.gon);
+            expect(move.pass).to.equal(false);
+            expect(move.faceDown).to.equal(true);
+        });
     });
 
     describe('#toString', () => {
@@ -41,6 +49,10 @@ describe('Move', () => {
             let move = Move.ofPass(2);
             expect(move.toString()).to.equal("3p");
         });
+        it("describes Hidden-faceDown move to string", () => {
+            let move = Move.ofFaceDown(0, Koma.hidden, Koma.gin);
+            expect(move.toString()).to.equal("1x4");
+        });
     });
 
     describe('#toOpenString', () => {
@@ -55,6 +67,10 @@ describe('Move', () => {
         it("describes Pass move to string", () => {
             let move = Move.ofPass(2);
             expect(move.toOpenString()).to.equal("3p");
+        });
+        it("describes Hidden-faceDown move to string", () => {
+            let move = Move.ofFaceDown(0, Koma.hidden, Koma.gin);
+            expect(move.toOpenString()).to.equal("1x4");
         });
     });
 
@@ -99,7 +115,7 @@ describe('BoardHistory', () => {
     });
     describe('#parseMoveHistory', () => {
         it("parse empty", () => {
-            let array = "".split(",");
+            let array = [] as string[];
             let moves = BoardHistory.parseMoveHistory(array);
             expect(moves.length).to.equal(0);
         });
@@ -108,6 +124,15 @@ describe('BoardHistory', () => {
             let moves = BoardHistory.parseMoveHistory(array);
             expect(moves.length).to.equal(7);
             expect(moves[0].toOpenString()).to.equal("113");
+            expect(moves[1].toOpenString()).to.equal("2p");
+            expect(moves[2].toOpenString()).to.equal("3p");
+            expect(moves[3].toOpenString()).to.equal("431");
+        });
+        it("parse moves containing hidden", () => {
+            let array = "1x3,2p,3p,431,1p,2p,315".split(",");
+            let moves = BoardHistory.parseMoveHistory(array);
+            expect(moves.length).to.equal(7);
+            expect(moves[0].toOpenString()).to.equal("1x3");
             expect(moves[1].toOpenString()).to.equal("2p");
             expect(moves[2].toOpenString()).to.equal("3p");
             expect(moves[3].toOpenString()).to.equal("431");
@@ -124,8 +149,21 @@ describe('BoardHistory', () => {
     });
 
     describe('#toHiddenString', () => {
-        it("describes hidden history in string format", () => {
-            expect(sampleHistory.toHiddenString()).to.equal("xxxxxxxx,xxxxxxxx,xxxxxxxx,11112345,s1,1x3,2p,3p,431,1p,2p,315");
+        it("describes hidden history #0", () => {
+            const h = BoardHistory.fromString("12345678,12345679,11112345,11112345,s1,113,2p,3p,431,1p,2p,3p,412");
+            expect(h.toHiddenString(0)).to.equal("12345678,xxxxxxxx,xxxxxxxx,123xxxxx,s1,113,2p,3p,431,1p,2p,3p,4x2");
+        });
+        it("describes hidden history #1", () => {
+            const h = BoardHistory.fromString("12345678,12345679,11112345,11112345,s1,113,2p,3p,431,1p,2p,3p,412");
+            expect(h.toHiddenString(1)).to.equal("3xxxxxxx,12345679,xxxxxxxx,123xxxxx,s1,1x3,2p,3p,431,1p,2p,3p,4x2");
+        });
+        it("describes hidden history #2", () => {
+            const h = BoardHistory.fromString("12345678,12345679,11112345,11112345,s1,113,2p,3p,431,1p,2p,3p,412");
+            expect(h.toHiddenString(2)).to.equal("3xxxxxxx,xxxxxxxx,11112345,123xxxxx,s1,1x3,2p,3p,431,1p,2p,3p,4x2");
+        });
+        it("describes hidden history #3", () => {
+            const h = BoardHistory.fromString("12345678,12345679,11112345,11112345,s1,113,2p,3p,431,1p,2p,3p,412");
+            expect(h.toHiddenString(3)).to.equal("3xxxxxxx,xxxxxxxx,xxxxxxxx,11112345,s1,1x3,2p,3p,431,1p,2p,3p,412");
         });
     });
 

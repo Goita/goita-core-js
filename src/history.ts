@@ -201,7 +201,7 @@ export class BoardHistory {
     }
 
     public get lastAttackMove(): Move {
-        for (let i = (this.moveStack.length - 1)|0; i >= 0; i = (i - 1)|0) {
+        for (let i = (this.moveStack.length - 1) | 0; i >= 0; i = (i - 1) | 0) {
             let m = this.moveStack[i];
             if (!m.pass) {
                 return m;
@@ -260,7 +260,7 @@ export class BoardHistory {
         let historyArray = history.split(Define.historyStringDelimiter);
 
         let tegomas = new Array<string>();
-        for (let i = 0; i < (Define.maxPlayers|0); i = (i+1)|0) {
+        for (let i = 0; i < (Define.maxPlayers | 0); i = (i + 1) | 0) {
             tegomas.push(historyArray[i]);
         }
 
@@ -287,7 +287,7 @@ export class BoardHistory {
         let attacker: number = Number(moveHistory[0].charAt(0)) - 1;
 
         for (let m of moveHistory) {
-            if(!m || m.length === 0) {
+            if (!m || m.length === 0) {
                 continue;
             }
             let move = Move.fromStr(m, attacker);
@@ -301,7 +301,7 @@ export class BoardHistory {
 
     public toString(): string {
         let str = new Array<string>();
-        for (let i = 0; i < (Define.maxPlayers|0); i = (i+1)|0) {
+        for (let i = 0; i < (Define.maxPlayers | 0); i = (i + 1) | 0) {
             const hand = KomaArray.createFrom(this.hands[i]).sort();
             str.push(KomaArray.toString(hand));
         }
@@ -312,24 +312,68 @@ export class BoardHistory {
         return str.join(Define.historyStringDelimiter);
     }
 
-    public toHiddenString(): string {
+    /** describe history in the view of given player no */
+    public toHiddenString(no: number): string {
         let str = new Array<string>();
-        for (let i = 0; i < (Define.maxPlayers|0); i = (i+1)|0) {
-            if(i === this.turn){
+        for (let i = 0; i < (Define.maxPlayers | 0); i = (i + 1) | 0) {
+            if (i === no) {
                 const hand = KomaArray.createFrom(this.hands[i]).sort();
                 str.push(KomaArray.toString(hand));
-            } else{
-                str.push("xxxxxxxx");
+            } else {
+                str.push(null); //empty for the space
             }
         }
         str.push(Define.dealerChar + (this.dealer + 1));
         for (const move of this.moveStack) {
-            if(move.no === this.turn) {
+            if (move.no === no) {
                 str.push(move.toOpenString());
-            }else{
+            } else {
                 // put hidden info
                 str.push(move.toString());
             }
+        }
+
+        // fill other players hand
+        const hands = [] as Koma[][];
+        for (let i = 0; i < 4; i++) {
+            hands[i] = [];
+        }
+        for (const move of this.moveStack) {
+            if (move.no === no || move.pass) {
+                continue;
+            }
+
+            if (!move.block.isHidden && !move.faceDown) {
+                hands[move.no].push(move.block);
+            }
+
+            if (!move.attack.isHidden) {
+                hands[move.no].push(move.attack);
+            }
+        }
+
+
+        for (let i = 0; i < 4; i++) {
+            if (i === no) { continue; }
+
+            const hand = hands[i];
+            // fill goshi hand
+            const initHand = KomaArray.createFrom(this.hands[i]);
+            const shiCount = KomaArray.count(initHand, Koma.shi);
+            if (shiCount >= 5) {
+                while (KomaArray.count(hand, Koma.shi) < shiCount) {
+                    hand.push(Koma.shi);
+                }
+            }
+
+            // fill hidden
+            while (KomaArray.getLength(hand) < Define.maxFieldLength) {
+                hand.push(Koma.hidden);
+            }
+
+            // replace
+            KomaArray.sortAsc(hand);
+            str[i] = KomaArray.toString(hand);
         }
         return str.join(Define.historyStringDelimiter);
     }
