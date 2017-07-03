@@ -293,7 +293,7 @@ export class Board {
         }
 
         // remove initial-condition-info. like "12345678,12345679,11112345,11112345,s1,"
-        let history = this.history.toHiddenString().substring(39);
+        let history = this.history.toHiddenString(this.history.turn).substring(39);
 
         return new ThinkingInfo(turn, this.history.dealer, hand, fields, hidden, lastAttack, this._yakuInfo, history);
     }

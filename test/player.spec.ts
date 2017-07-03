@@ -13,6 +13,14 @@ describe('Player', () => {
             expect(player.field.length).to.equal(Define.maxFieldLength);
             expect(player.fieldCounter).to.equal(0);
         });
+        it("create with hidden", () => {
+            let player = new Player(1, "11111xxx");
+            expect(player.no).to.equal(1);
+            expect(player.hand.length).to.equal(Define.maxFieldLength);
+            expect(player.handCounter).to.equal(Define.maxFieldLength);
+            expect(player.field.length).to.equal(Define.maxFieldLength);
+            expect(player.fieldCounter).to.equal(0);
+        });
     });
 
     describe('#hasKoma', () => {
@@ -76,6 +84,15 @@ describe('Player', () => {
             expect(Player.prototype.putKoma.bind(player, Koma.gyoku)).throws();
             expect(Player.prototype.putKoma.bind(player, Koma.bakko)).throws();
         });
+        it("put hidden koma", () => {
+            let player = new Player(1, "112228xx");
+            player.putKoma(Koma.hidden, true);
+            player.putKoma(Koma.gon);
+            player.putKoma(Koma.hidden, true);
+            player.putKoma(Koma.shi);
+            expect(KomaArray.toString(player.field)).to.equal("x2x10000");
+            expect(KomaArray.toString(player.hand)).to.equal("82210000");
+        });
     });
     describe('#pickLastKoma', () => {
         it("remove put koma from field", () => {
@@ -116,6 +133,10 @@ describe('Player', () => {
             let player = new Player(1, "11122789");
             expect(KomaArray.toString(player.getUniqueHand())).to.equal("12789");
         });
+        it("hidden", () => {
+            let player = new Player(1, "xxx22789");
+            expect(KomaArray.toString(player.getUniqueHand())).to.equal("x2789");
+        });
     });
 
     describe('#getHiddenKoma', () => {
@@ -126,6 +147,14 @@ describe('Player', () => {
             player.putKoma(Koma.bakko, true);
             player.putKoma(Koma.gin);
             expect(KomaArray.toString(player.getHiddenKoma())).to.equal("10300000");
+        });
+        it("face down hidden list", () => {
+            let player = new Player(1, "84x2221x");
+            player.putKoma(Koma.hidden, true);
+            player.putKoma(Koma.gon);
+            player.putKoma(Koma.hidden, true);
+            player.putKoma(Koma.gin);
+            expect(KomaArray.toString(player.getHiddenKoma())).to.equal("x0x00000");
         });
     });
 });
