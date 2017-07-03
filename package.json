@@ -28,7 +28,7 @@
     "dependencies": {
         "@types/random-js": "^1.0.28",
         "random-js": "^1.0.8",
-        "tslib": "^1.2.0"
+        "tslib": "^1.7.1"
     },
     "devDependencies": {
         "@types/chai": "^4.0.1",
@@ -36,11 +36,9 @@
         "@types/node": "^8.0.7",
         "chai": "^4.0.2",
         "mocha": "^3.4.2",
-        "node-inspector": "^0.12.10",
         "ts-node": "^3.1.0",
         "tslint": "^4.0.2",
         "typescript": "^2.4.1",
-        "v8-profiler": "^5.6.5",
         "webpack": "^2.2.1"
     }
 }
