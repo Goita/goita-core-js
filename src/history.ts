@@ -312,6 +312,11 @@ export class BoardHistory {
         return str.join(Define.historyStringDelimiter);
     }
 
+    /** describe history to observers */
+    public toAllHiddenString(): string {
+        return this.toHiddenString(-1);
+    }
+
     /** describe history in the view of given player no */
     public toHiddenString(no: number): string {
         let str = new Array<string>();

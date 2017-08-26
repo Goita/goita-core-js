@@ -148,6 +148,13 @@ describe('BoardHistory', () => {
         });
     });
 
+    describe('#toAllHiddenString', () => {
+        it("describes hidden history to observers", () => {
+            const h = BoardHistory.fromString("12345678,12345679,11112345,11112345,s1,113,2p,3p,431,1p,2p,3p,412");
+            expect(h.toAllHiddenString()).to.equal("3xxxxxxx,xxxxxxxx,xxxxxxxx,123xxxxx,s1,1x3,2p,3p,431,1p,2p,3p,4x2");
+        });
+    });
+
     describe('#toHiddenString', () => {
         it("describes hidden history #0", () => {
             const h = BoardHistory.fromString("12345678,12345679,11112345,11112345,s1,113,2p,3p,431,1p,2p,3p,412");
